@@ -1,0 +1,1631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CATALOGO BIA HONDURAS</title>
+    
+    <style>
+        
+
+        .title-3d {
+            
+    font-size: 3rem;
+    font-weight: bold;
+    text-align: center !important;
+    color: #333; /* Color oscuro pero elegante */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    margin: 50px auto;
+    text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.3),
+                 4px 4px 0px rgba(0, 0, 0, 0.2),
+                 6px 6px 0px rgba(0, 0, 0, 0.1);
+    transition: text-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+/* Efecto de movimiento al pasar el mouse */
+.title-3d:hover {
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3),
+                 8px 8px 0px rgba(0, 0, 0, 0.2),
+                 12px 12px 0px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px);
+}
+
+
+
+
+
+        /* Reset de estilo básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        
+:root {
+    --primary-color: #007bff;
+    --hover-color: #0056b3;
+    --accent-green: #28a745;
+    --hover-green: #218838;
+    --dark-text: #333;
+    --light-bg: #f4f7fc;
+    --card-shadow: rgba(0, 0, 0, 0.1);
+    --transition-fast: 0.3s;
+}
+
+body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            transition: background-color 0.3s;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1, h2 {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        .category-list, .line-list, .product-list {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        .category, .line, .product {
+            display: inline-block;
+            margin: 20px;
+            width: 250px;
+            text-align: center !important;
+            transition: transform 0.3s ease-in-out;
+            border-radius: 10px;
+            background: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .category:hover, .line:hover, .product:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .category img, .line img, .product img {
+            width: 100%;
+            border-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .category p, .line p, .product p {
+            margin-top: 10px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #218838;
+        }
+
+        footer { 
+    background-color: rgb(0, 0, 0);
+    color: white;
+    text-align: center !important;
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Esto es clave para que se apile en móviles */
+}
+
+     
+        .footer-container {
+    display: flex;
+    flex-wrap: wrap; /* Permite que el contenido se ajuste si no cabe */
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    max-width: 1200px;
+    gap: 10px;
+    text-align: center !important;
+}
+
+
+.footer-logo {
+    width: 70px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+        /* Imagen de fondo transparente */
+        .background-image {
+            background: url('https://i.imgur.com/0qVhnMA.jpeg') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.15;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Botón Volver siempre centrado */
+        .center-button {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%);
+            font-size: 30px;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 40px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Hace la sombra más visible */
+            transition: background-color 0.3s;
+        }
+
+        .center-button:hover {
+            background-color: #0056b3;
+    transform: translateX(-50%) scale(1.1); /* Pequeño efecto de agrandado */
+        }
+
+        /* Animación de desvanecimiento */
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Efecto para el scroll */
+        .scroll-down {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #28a745;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+    
+@media (max-width: 768px) {
+    .product, .category, .line {
+        width: 90% !important;
+        margin: 10px auto !important;
+        display: block !important;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .center-button {
+        width: 90%;
+        font-size: 1.2rem;
+        padding: 10px 0;
+        text-align: center !important;
+    }
+
+    h1.title-3d, h2 {
+        font-size: 2rem !important;
+        text-align: center !important;
+    }
+
+    .product p, .line p, .category p {
+        text-align: center !important;
+    }
+}
+
+</style>
+</head>
+
+
+<body>
+    <header><h1 class="title-3d">CATÁLOGO BIA HONDURAS</h1></header>
+    
+  <!-- Imagen de fondo transparente -->
+    <div class="background-image"></div>
+  <!-- Página Principal -->
+    <div id="main-page" class="container category-list active fade-in">
+        
+        <p class="intro-text">Selecciona una marca para ver los productos disponibles.</p>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('cafe-maya')">
+                <img src="LOGO\MAYA.jpg" alt="Café Maya">
+                <p><strong>Café Maya</strong></p>
+            </a>
+        </div>
+      <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('cafe-INDIO')">
+                <img src="LOGO\GK.jpg" alt="Café Maya">
+                <p><strong>GK</strong></p>
+            </a>
+        </div>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('VENUS')">
+                <img src="LOGO\images.png" alt="Café Maya">
+                <p><strong>Confite Venus</strong></p>
+            </a>
+        </div>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('GUANDI')">
+                <img src="LOGO\GUANDY.jpg" alt="Café Maya">
+                <p><strong>Guandy</strong></p>
+            </a>
+        </div>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa')">
+                <img src="LOGO\NUTRESA.jpg" alt="Café Maya">
+                <p><strong>Grupo Nutresa</strong></p>
+            </a>
+        </div>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('Best')">
+                <img src="LOGO\images (1).png" alt="Café Maya">
+                <p><strong>Best</strong></p>
+            </a>
+        </div>
+        <div class="category">
+            <a href="javascript:void(0)" onclick="showPage('Molsa')">
+                <img src="LOGO\MOLSA.jpg" alt="Café Maya">
+                <p><strong>MOLSA</strong></p>
+            </a>
+        </div>
+          
+
+        <!-- --->
+        <div class="scroll-down">↓</div>
+    </div>
+    <style>
+    .intro-text {
+        text-align: center !important;
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-top: 20px;
+        color: #333;
+    }
+
+@media (max-width: 768px) {
+    .product, .category, .line {
+        width: 90% !important;
+        margin: 10px auto !important;
+        display: block !important;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .center-button {
+        width: 90%;
+        font-size: 1.2rem;
+        padding: 10px 0;
+        text-align: center !important;
+    }
+
+    h1.title-3d, h2 {
+        font-size: 2rem !important;
+        text-align: center !important;
+    }
+
+    .product p, .line p, .category p {
+        text-align: center !important;
+    }
+}
+
+</style>
+
+    
+            <!---------------------------------------------------------------------------->
+    <!-- Página de Café Maya -->
+    <style>
+        .line {
+            margin-bottom: 20px;
+            text-align: center !important;
+            position: relative;
+        }
+     .line img {
+            width: 100%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            cursor: pointer;
+            border: 3px solid transparent; /* Marco transparente por defecto */
+            border-radius: 10px;
+        }
+    .line img:hover {
+            transform: scale(1.05); /* Efecto de ampliación */
+            box-shadow: 0 10px 30px rgba(0, 0, 255, 0.5); /* Sombra azul */
+            border: 5px solid #4682B4; /* Marco azul */
+        }
+    .line p {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+        }
+    .line a {
+            text-decoration: none;
+        }
+    .center-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4682B4;
+            color: white;
+            text-align: center !important;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    .center-button:hover {
+            background-color: #3b6a99;
+        }
+    .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+    @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+    
+@media (max-width: 768px) {
+    .product, .category, .line {
+        width: 90% !important;
+        margin: 10px auto !important;
+        display: block !important;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .center-button {
+        width: 90%;
+        font-size: 1.2rem;
+        padding: 10px 0;
+        text-align: center !important;
+    }
+
+    h1.title-3d, h2 {
+        font-size: 2rem !important;
+        text-align: center !important;
+    }
+
+    .product p, .line p, .category p {
+        text-align: center !important;
+    }
+}
+
+</style>
+    <div id="cafe-maya" class="container line-list fade-in">
+        <h2>Líneas de Café Maya</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('torrefacto maya')">
+                <img src="MAYA\Torrefacto maya\Cafe Maya 390 g.jpg" alt="Torrefacto">
+                <p><strong>Torrefacto</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Selecto maya')">
+                <img src="MAYA\CAfe maya selecto\Cafe Maya Selecto.jpg" alt="Puro">
+                <p><strong>Café Maya Selecto</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Puro maya')">
+                <img src="MAYA\Cafe Maya Puro molido 340g.jpg" alt="Productos">
+                <p><strong>Puro</strong></p>
+            </a>
+        </div>
+       
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Soluble maya')">
+                <img src="MAYA\Cafe Maya Soluble.jpg" alt="Productos">
+                <p><strong>Soluble</strong></p>
+            </a>
+        </div>
+        <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+    
+    <script>
+        function showPage(page) {
+            console.log("Cargando la página: " + page);
+            // Aquí puedes agregar el código para cambiar de página
+        }
+    </script>
+     <!-- Página de Torrefacto maya -->
+    <div id="torrefacto maya" class="container product-list fade-in">
+        <h2>Productos de Torrefacto</h2>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Maya 390 g.jpg" alt="Café Maya 432g"onclick="toggleImageSize(this)">
+            <p><strong>Cafe Maya </strong><br> 390 g <br> Código: 100018 <br> Precio:  L. 107</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Campeño.jpg" alt="Café Maya 378g"onclick="toggleImageSize(this)">
+            <p><strong>Café Campeño</strong><br>1x15 390 g <br> Código: 110006<br> Precio: L.99</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Medalla 1x15.jpg" alt="Café Maya 216g"onclick="toggleImageSize(this)">
+            <p><strong>Café Medalla </strong><br>1x15 390 g <br> Código: 120006 <br> Precio:  L. 107</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Casinos 350g.jpg" alt="Café Maya 6oz"onclick="toggleImageSize(this)">
+            <p><strong>Café Casinos </strong><br> 375 g 1x15  <br> Código:  150003 <br> Precio:  L. 85</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Casinos 350g.jpg" alt="Café Maya Selecto 378g"onclick="toggleImageSize(this)">
+            <p><strong>Café Casinos </strong><br> 350 g  1x14 <br> Código:  150001 <br> Precio:  L. 51</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Medalla 1x8.jpg" alt="Café Maya Selecto 6oz"onclick="toggleImageSize(this)">
+            <p><strong>Café Medalla</strong><br> 1x8 208 g <br> Código: 120012 <br> Precio:  L. 58</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Maya 208g.jpg" alt="Café Medalla 432g"onclick="toggleImageSize(this)">
+            <p><strong>Café Maya</strong><br>  208g <br>Código: 100013<br> Precio:  L. 58</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Torrefacto maya\Cafe Maya 6oz.jpg" alt="Café Medalla 378g"onclick="toggleImageSize(this)">
+            <p><strong>Café Maya</strong><br> 6oz <br> Código: 100020 <br> Precio: L. 21.67</p>
+        </div>
+       <span class="center-button" onclick="showPage('cafe-maya')">⬅ Volver</span>
+    </div>
+<!-- Página de Selecto  maya-->
+    <div id="Selecto maya" class="container product-list fade-in">
+        <h2>Productos Café Maya Selecto</h2>
+     
+        <div class="product">
+            <img src="MAYA\CAfe maya selecto\Cafe Maya Selecto.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Selecto</strong><br> 1x16 324 g <br> Código: 100080<br> Precio:  L. 113</p>
+        </div>
+       <span class="center-button" onclick="showPage('cafe-maya')">⬅ Volver</span>
+    </div>
+<!-- Página de cafe Puro maya -->
+    <div id="Puro maya" class="container product-list fade-in">
+        <h2>Productos de Café puro maya</h2>
+        <div class="product">
+            <img src="MAYA\CAfe maya selecto\Cafe Maya de Palo.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Café Maya de Palo</strong><br> 444 g <br> Código: 100077<br> Precio:  L. 97</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Cafe Maya Puro molido 340g.jpg" alt="Café Instantáneo"onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Puro Molido</strong><br> 340 g  <br> Código: 100064<br> Precio:  L. 102</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Cofee Club\Cafe Maya Coffee Club.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Coffee Club Puro Molido</strong> <br> 340 g <br> Código: 100031<br> Precio:  L. 104</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Cofee Club\Cafe Maya Coffee Club Puro grano.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Coffee Club Puro Grano </strong><br>340 g<br> Código: 100032<br>Precio:  L. 104</p>
+        </div>
+       <span class="center-button" onclick="showPage('cafe-maya')">⬅ Volver</span>
+    </div>
+<script>
+        function showPage(pageId) {
+            var pages = document.querySelectorAll('.category-list, .line-list, .product-list');
+            pages.forEach(function(page) {
+                page.classList.remove('active');
+            });
+
+            var targetPage = document.getElementById(pageId);
+            targetPage.classList.add('active');
+        }
+    </script>
+
+<!-- Página Soluble maya-->
+     <div id="Soluble maya" class="container product-list fade-in">
+        <h2>Productos Café Soluble</h2>
+        <div class="product">
+            <img src="MAYA\Cafe Maya Soluble.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Soluble</strong> <br> Ristra 96 g 1x4x12 <br> Código: 100089<br> Precio:  L. 80</p>
+        </div>
+        <div class="product">
+            <img src="MAYA\Cafe Maya Soluble.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café Maya Soluble </strong><br>Ristra 120 g 1x4x12<br> Código: 100090<br>Precio:  L. 80</p>
+        </div>
+        <span class="center-button" onclick="showPage('cafe-maya')">⬅ Volver</span>
+    </div>    
+            <!---------------------------------------------------------------------------->
+ <!-- Página de Café INDIO -->
+ <div id="cafe-INDIO" class="container line-list fade-in">
+    <h2>Líneas de Café INDIO</h2>
+    <div class="line">
+        <a href="javascript:void(0)" onclick="showPage('INDIO_PRODUCTOS_TORREFACTO')">
+            <img src="GK\Torrefacto\Café ORO 405g.jpg" alt="Torrefacto">
+            <p><strong>Torrefacto</strong></p>
+        </a>
+    </div>
+    <div class="line">
+        <a href="javascript:void(0)" onclick="showPage('Café Grano Tostado')">
+            <img src="GK\Cafe Grano Tostado\Cafe Medio Tostado.jpg" alt="Puro">
+            <p><strong>Café Grano Tostado</strong></p>
+        </a>
+    </div>
+    <div class="line">
+        <a href="javascript:void(0)" onclick="showPage('Café Molido Tostado')">
+            <img src="GK\Café Molido Tostado\Cafe Molido Tostado Medio 12 oz.jpg" alt="Puro">
+            <p><strong>Café Molido Tostado</strong></p>
+        </a>
+    </div>
+<span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+</div>
+<!-- Página de INDIO_torrefacto -->
+      <div id="INDIO_PRODUCTOS_TORREFACTO" class="container product-list fade-in">
+        <h2>Productos de Torrefacto</h2>
+        <div class="product">
+            <img src="GK\Torrefacto\Café ORO 405g.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café ORO 405g</strong><br>  Código:  010210<br>Precio: L. 115</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Café ORO 216g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Café ORO 216g</strong><br> Código:  010211<br> Precio:  L. 62 </p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe ORO 8 oz.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe ORO 8 oz </strong><br>Código:  010203 <br> Precio:  L. 59</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Café Oro 6 oz.jpg" alt="Café Maya Palo 444g"onclick="toggleImageSize(this)">
+            <p><strong>Café Oro 6 oz </strong><br> Código: 010205 <br> Precio: L. 38</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe INDIO 390g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe INDIO 390g</strong><br> Código:  010110<br> Precio:  L. 107</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe INDIO 390g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe REY 390g </strong><br>Código:  010310 <br> Precio:  L. 107</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe INDIO 208g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe INDIO 208g </strong><br>Código:  010111 <br> Precio:  L. 58</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe CORONA 390g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe CORONA 390g </strong><br>Código:  010410<br>Precio:  L. 99</p>
+        </div>
+        <div class="product">
+            <img src="GK\Torrefacto\Cafe MI DELICIA 375g.jpg"onclick="toggleImageSize(this)">
+            <p><strong>Cafe MI DELICIA 375g</strong><br>Código:  010510<br>Precio:  L. 85</p>
+        </div>
+      <script>
+            function toggleImageSize(img) {
+                img.classList.toggle('enlarged');
+            }
+        </script>
+        <span class="center-button" onclick="showPage('cafe-INDIO')">⬅ Volver</span>
+    </div>
+<!-- Página Café Grano Tostado -->
+    <style>
+        .product img {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .product img.expanded {
+            transform: scale(1.8); /* Aumento de la ampliación */
+            box-shadow: 0 10px 30px rgba(70, 130, 180, 0.7); /* Sombra azul intermedio */
+            border: 5px solid #4682B4; /* Borde azul intermedio */
+            opacity: 0.9;
+        }
+    
+@media (max-width: 768px) {
+    .product, .category, .line {
+        width: 90% !important;
+        margin: 10px auto !important;
+        display: block !important;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .center-button {
+        width: 90%;
+        font-size: 1.2rem;
+        padding: 10px 0;
+        text-align: center !important;
+    }
+
+    h1.title-3d, h2 {
+        font-size: 2rem !important;
+        text-align: center !important;
+    }
+
+    .product p, .line p, .category p {
+        text-align: center !important;
+    }
+}
+
+</style>
+    <script>
+        function toggleImageSize(img) {
+            img.classList.toggle("expanded");
+        }
+    </script>
+    <div id="Café Grano Tostado" class="container product-list fade-in">
+        <h2>Productos Café Grano Tostado</h2>
+        <div class="product">
+            <img src="GK\Cafe Grano Tostado\Cafe Medio Tostado.jpg" onclick="toggleImageSize(this)">
+            <p><strong>Cafe Medio Tostado </strong><br>12 oz Grano <br> Código:  010165<br>Precio:  L. 108</p>
+        </div>
+        <div class="product">
+            <img src="GK\Cafe Grano Tostado\Cafe Tostado  Espresso 12.jpg" onclick="toggleImageSize(this)">
+            <p><strong>Cafe Tostado  Espresso</strong><br> 12 oz Grano<br> Código:  010161<br> Precio:  L. 115</p>
+        </div>
+        <span class="center-button" onclick="showPage('cafe-INDIO')">⬅ Volver</span>
+    </div>
+<!-- Página Café Molido Tostado-->
+    <div id="Café Molido Tostado" class="container product-list fade-in">
+        <h2>Productos Café Molido Tostado</h2>
+        <div class="product">
+            <img src="GK\Café Molido Tostado\Cafe Molido Tostado Tipo Espreso.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Café Molido Tostado Tipo Espresso</strong> <br> Código: 010160<br> Precio: L. 106</p>
+        </div>
+        <div class="product">
+            <img src="GK\Café Molido Tostado\Cafe Molido Tostado Tipo Percolador.jpg" onclick="toggleImageSize(this)">
+            <p><strong>Café Molido Tostado Tipo Percolador </strong><br>Código: 010163<br> Precio: L. 106</p>
+        </div>
+        <div class="product">
+            <img src="GK\Café Molido Tostado\Cafe Molido Tostado Medio 12 oz.jpg" onclick="toggleImageSize(this)">
+        <p><strong>Café Molido Tostado Medio 12 oz</strong><br> Código: 010164<br> Precio: L. 106</p>
+        </div>
+        <div class="product">
+            <img src="GK\Café Molido Tostado\Cafe Tostado Tipo Arabe.jpg" onclick="toggleImageSize(this)">
+            <p><strong>Café Tostado Tipo Arabe 12 oz</strong><br>Código:  010162<br> Precio:  L. 106</p>
+        </div>
+      <span class="center-button" onclick="showPage('cafe-INDIO')">⬅ Volver</span>
+    </div>     
+            <!---------------------------------------------------------------------------->
+      <!-- Página VENUS -->
+     <div id="VENUS" class="container line-list fade-in">
+        <h2>Líneas Venus</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('confites_venus')">
+                <img src="https://tiendaenlinea.supermercadoelexito.hn/web/image/product.template/6548/image_1024?unique=ad6a51e" alt="Torrefacto">
+                <p><strong>Confines</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Chicle_venus')">
+                <img src="https://walmarthn.vtexassets.com/arquivos/ids/173321/Caramelos-Venus-Vaquita-Leche-160Gr-1-4038.jpg?v=637667557171700000" alt="Puro">
+                <p><strong>Chicle</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Paletas_venus')">
+                <img src="https://i.imgur.com/KhvyfUW.jpeg" alt="Puro">
+                <p><strong>Paletas</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Bombones_venus')">
+                <img src="https://i.imgur.com/cp7sKp7.jpeg" alt="Puro">
+                <p><strong>Bombones</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Chicleton_venus')">
+                <img src="https://tiendaenlinea.supermercadoelexito.hn/web/image/product.template/6668/image_1024?unique=ad6a51e" alt="Puro">
+                <p><strong>Chicleton</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Libras_venus')">
+                <img src="https://i.imgur.com/sdFzkYS.jpeg" alt="Puro">
+                <p><strong>Libras</strong></p>
+            </a>
+        </div>
+ <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+     <!-- Página Confites -->
+    <div id="confites_venus" class="container product-list fade-in">
+        <h2>Productos confites venus</h2>
+        <div class="product">
+            <img src="https://i.imgur.com/s2jOh3l.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite relleno EUCALIPTO </strong><br> 1C x 12 Bolsas x 100 <br> Código: 330038 <br> Precio:  L. 39</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/krzOiU0.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Venus Chiki Fiesta </strong><br> 1Far x 50 Bol x 40 Und   <br> Código:  330033<br> Precio:  L. 11 x Und</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/frrw5nX.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite COFFE TOFFE</strong><br>12x100<br> Código: 330047 <br> Precio:  L. 33</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/oLcdiRm.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Suave MASTICABLE </strong><br>12x100 <br> Código: 330048 <br> Precio:  L. 33</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/McNC4r3.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite RELLENO DE CAFÉ </strong><br> 1Cj x 12 Bolsas x 100 Und<br> Código: 330041<br> Precio:  L. 39</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/hgyZFKz.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite duro CARDAMOMO</strong><br>50x40<br> Código: 330053 <br> Precio:  L. 13</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/AWjtxbF.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite menta largo  </strong><br> 12x100 <br> Código: 330054 <br> Precio:  L. 33</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/ZSSTDHF.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Venus VAQUITA </strong><br> 50 bolsas x 40 Und  <br>Código: 330063<br> Precio:  L. 13</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/jAetHMp.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Venus MENTA </strong><br>50 bolsas x 40Und 160g<br> Código:  330080 <br> Precio:  L. 13</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/5b2Jnlt.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Venus FIESTA  </strong><br> 50 bolsas x 40 Und 160g <br>Código: 330081<br>Precio:  L. 13</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/yUxp41j.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Confite Venus Miel </strong><br>1 Cj X 12 Bolsas X 100 Und<br> Código: 330010<br>Precio:  L. 39</p>
+        </div>
+       <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+    </div>
+     <!-- Página Chicle -->
+     <div id="Chicle_venus" class="container product-list fade-in">
+        <h2>Productos Chicle venus</h2>
+        <div class="product">
+            <img src="https://i.imgur.com/5gkjcQY.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chicle VENUS Menta  </strong><br>50 bolsas x 35 Und<br>Código: 330079<br> Precio:  L. 13</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/yKZXS9q.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chicle Venus CHIKI GOOL</strong><br> CB: 0073508003032<br> Código: 330064<br> Precio:  L. 11</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/nE4GQDp.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chicle Venus Menta Largo</strong><br>50 bolsas x 35 Und<br>Código: 330065<br> Precio:  L. 11</p>
+        </div>
+        <div class="product">
+            <img src="https://i.imgur.com/FuI0CSB.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chicle venus Gool </strong><br>Tutti Frutti 1x50x36<br>Código: 330078<br> Precio:  L. 13</p>
+        </div>
+       <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+    </div>
+ <!-- Página Libras -->
+ <div id="Libras_venus" class="container product-list fade-in">
+    <h2>Productos Libras venus</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/OxJmyxp.png" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Confite Venus Duro Fiesta  </strong><br>Gigante 12 x 3 LB<br>Código: 330020<br> Precio:  L. 120</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/XPiskOR.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Candy Mix </strong><br> 4X10 <br> Código: 330046<br> Precio:  L. 400</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/oPpUqSF.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Confite Venus</strong><br>Jumbo 6 x 5 LB<br>Código: 330021<br> Precio:  L. 200</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/sdFzkYS.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Confite Candy</strong><br>Mix 15 lbs<br>Código: 330050<br> Precio:  L. 595</p>
+    </div>
+   <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+</div>
+<!-- Página Paletas -->
+   <div id="Paletas_venus" class="container product-list fade-in">
+    <h2>Productos Paletas venus</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/HxrxEKV.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Pops Kiss Mora Azul </strong><br>15x24<br>Código:  330082<br>Precio:  L. 24</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/tkDaw45.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Pops Kiss</strong><br>15x24 <br>Código:  330051<br> Precio:  L. 24</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/1k0QweI.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Mas Amor Cereza</strong><br>1Cj x 25 Bolsas x 25 Und<br>Código: 330036<br>Precio:  L. 24</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/pNP1Jde.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Dulce Amor Cereza</strong><br>16x40<br>Código: 330017<br> Precio:  L. 40</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/89eQ3mj.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Dulce Amor Sandia</strong><br>16x40<br>Código: 330018<br> Precio:  L. 40</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/Dj7iUCb.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Suave Fruta</strong><br>30 x 40<br>Código:330019<br> Precio: L. 31</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/PNm2vHe.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Paleta Mas Amor Sandia </strong><br>1Cj x 25 Bolsas x25 Und<br>Código: 330037<br>Precio:  L. 24</p>
+    </div>
+    <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+</div>
+<!-- Página Bombones -->
+   <div id="Bombones_venus" class="container product-list fade-in">
+    <h2>Productos Bombones venus</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/PzrxbC5.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Bombón Surtido</strong><br>1x15x24 408g<br> Código: 330067<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/ajoyFmM.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón COCO</strong><br>15x24x17g<br>Código:  330070<br> Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/t7bjTFi.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón ICE</strong><br>CREAM 15x24x17g<br> Código:330071<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/TqNgaDf.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón DULCE DE LECHE</strong><br>15x24x17g<br> Código: 330072<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/WQtYl3n.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón ROJO BOOM</strong><br>15x24x17g<br>Código: 330073<br> Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/Cg164r6.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón SANDÍA</strong><br>15x24x17g<br>Código: 330074<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/32JR4dy.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón MANGO</strong><br>15x24x17g<br> Código: 330075<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/0DFGmA6.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón LYCHEE</strong><br>15x24x17g<br>Código: 330076<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/ioQdyb6.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón KOOL</strong><br>15x24x17g<br>Código: 330077<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/GIh8eIA.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>bombón YOGURT</strong><br>15x24x17g<br>Código: 330069<br>Precio:  L. 35</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/rdBhFAY.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Bombón Twist Surtido </strong><br>1x15x24 408gr<br>Código: 330068<br>Precio:  L. 35</p>
+    </div>
+    <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+</div>
+ <!-- Página Chicleton -->
+   <div id="Chicleton_venus" class="container product-list fade-in">
+    <h2>Productos Chicleton venus</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/X4JIsCf.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus Surtido</strong><br>1Cj x 12 bolsas x 100 und <br>Código: 330007<br>Precio:  L. 39</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/H5rd8Xn.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus MENTA </strong><br>1Cj x 12 Bolsas x 100 Und<br> Código: 330008<br>Precio:  L. 39</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/Kfs6EkG.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus Morita</strong><br>1 Cj X 12 Bolsas X 100 Und<br>Código: 330011<br>1 Precio:  L. 39</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/uKG0to8.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus Cerecita</strong><br>1 Cj X 12 Bolsas X 100 Und<br> Código: 330012<br>Precio:  L. 39</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/ipNlGvO.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus SANDIA</strong><br>1 Cj X 12 Bolsas X 100 Und<br>Código: 330016<br>Precio:  L. 39</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/SSP81Hd.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chicleton Venus MANGO</strong><br>1 Cj X 12 Bolsas x 100 Und<br> Código: 330049<br>Precio: L. 39</p>
+    </div>
+   <span class="center-button" onclick="showPage('VENUS')">⬅ Volver</span>
+</div>
+
+            <!---------------------------------------------------------------------------->
+     <!-- Página GUANDI -->
+     <div id="GUANDI" class="container line-list fade-in">
+        <h2>Líneas GUANDI</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Chocale_guandi')">
+                <img src="Guandy/TIRA CHOCALE CHOCOLATE.jpg" alt="Torrefacto">
+                <p><strong>Chocale</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Malvavisco_guandi')">
+                <img src="Guandy/Malvavisco crismelo blanco 150g.jpg" alt="Puro">
+                <p><strong>Malvavisco</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Gomitas_guandi')">
+                <img src="Guandy/Gomitas maracuya.jpg" alt="Puro">
+                <p><strong>Gomitas</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Bandejas_guandi')">
+                <img src="Guandy/Bandeja aros sandia.jpg" alt="Puro">
+                <p><strong>Bandejas</strong></p>
+            </a>
+        </div>
+      <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+<!-- Página GUANDY Chocale -->
+   <div id="Chocale_guandi" class="container product-list fade-in">
+    <h2>Productos Guandi Chocole</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/1xFX5bU.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Banana </strong> <br> 8x10x35 g <br> Código:310099 <br> Precio:  L. 64</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/KlKRTSL.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Fresa</strong><br> 8x10x35 g<br> Código:310100<br> Precio:  L. 64</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/l557zUe.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Malvavisco Tira Chocale</strong><br> 8x10x35 g.<br>Código:310043 <br> Precio:  L. 59</p>
+    </div>
+    <div class="product">
+        <img src="Guandy/TIRA CHOCALE CHOCOLATE.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Chocolate</strong><br> 8x10x35 g<br> Código:310097 <br> Precio: L.59</p>
+    </div>
+    <div class="product">
+        <img src="Guandy/TIRA CHOCALE CARNAVAL.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Carnaval</strong><br> 8x10x35 g<br>Código:310098<br> Precio: L.64</p>
+    </div>
+    <div class="product">
+        <img src="Guandy/Tira choco napolitano.png" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Choco Napolitano</strong><br> 24x12x25g<br>Código:310093<br> Precio:  L. 50</p>
+    </div>
+    <div class="product">
+        <img src="Guandy/TIRA CHOCALE PLATANO.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Banana</strong><br> 8x10x35 g<br>Código:310099<br> Precio: L.64</p>
+    </div>
+    <div class="product">
+        <img src="Guandy/TIRA CHOCALE FRESA.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+        <p><strong>Tira Chocale Fresa</strong><br> 8x10x35 g<br>Código:310100<br> Precio: L.59</p>
+    </div>
+    <span class="center-button" onclick="showPage('GUANDI')">⬅ Volver</span>
+</div>
+<!-- Página GUANDY Malvavisco -->
+     <div id="Malvavisco_guandi" class="container product-list fade-in">
+        <h2>Productos Gunadi Malvavisco</h2>
+        <div class="product">
+            <img src="Guandy/Crsimelos gigante bicolor.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelo Gigante Bicolor </strong> <br>  1C x 10 Bol x 30 Und x 24 gr; 720 gr <br> Código: 310018 <br> Precio: L. 75</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos blancos.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelos Blanco </strong><br> 1 Caja x  20 Bolsas x  50 Unid x 300 gr<br> Código: 310023<br> Precio: L. 30</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos color.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelos Color </strong><br> 1 Caja x 20 Bolsas x  50 Unid x 300 gra.<br>Código:310024 <br> Precio: L. 30</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/MALVAVISCO TIRA MINI.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvaviscos Tira Mini crismelo</strong><br>  12x12x40g<br> Código:310083 <br> Precio:  L. 50</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos gigante blanco.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>CRISMELOS Gigante Blanco</strong><br>  1C x 10 Bol x 30 Und x 24 grs<br>Código:310038<br> Precio: L.75</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos color 150g.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelos Color</strong><br> 18 x 150g<br>Código:310054<br> Precio:  L. 24</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos color.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvavisco Crismelos Color</strong><br> 15x240g<br>Código:310067<br> Precio: L.31</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos blancos.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvavisco Crismelos Blanco</strong><br> 15x240g<br>Código:310068<br> Precio: L.31</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Malvavisco bolson zoo bongy.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvaviscos Bolsón Zoo Bongy</strong><br> 24x50x5g<br>Código:310074<br> Precio: L.38</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Malvavisco marshmellosos.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvaviscos MarshmellOsos</strong><br>24x50x5g<br>Código:310076<br> Precio: L.36</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos blancos.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvavisco Crismelos blanco</strong><br> 18x150g <br>Código:310069<br> Precio: L.23</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Malvavisco napolitano.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Malvaviscos Napolitano</strong><br>Código:310094<br> Precio: L.32</p>
+        </div>
+       <span class="center-button" onclick="showPage('GUANDI')">⬅ Volver</span>
+    </div>
+<!-- Página GUANDY GOMITAS -->
+      <div id="Gomitas_guandi" class="container product-list fade-in">
+        <h2>Productos Gunadi Gomitas</h2>
+        <div class="product">
+            <img src="Guandy/Gomitas pinguino.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Gomitas pingüinos </strong> <br>  20x100 g <br> Código: 310078 <br> Precio: L. 25</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Gomitas maracuya.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Gomitas Maracuyá </strong><br>20x100 g  <br> Código: 310079<br> Precio: L. 27</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Gomitas pulpo.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Gomitas Pulpos </strong><br> 20 x 100g  <br>Código:310081<br> Precio: L. 25</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Gomitas gajos citricos.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Gummies Gajos Cítricos</strong><br> 20x100g<br> Código:310082<br> Precio:  L. 25</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crsimelos gota.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelos Gota</strong><br>1x20x100g<br>Código:310092<br> Precio: L.19</p>
+        </div>
+     <span class="center-button" onclick="showPage('GUANDI')">⬅ Volver</span>
+    </div>
+ <!-- Página GUANDY Bandejas -->
+      <div id="Bandejas_guandi" class="container product-list fade-in">
+        <h2>Productos Guandi Bandejas</h2>
+        <div class="product">
+            <img src="Guandy/Bandeja Ositos.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+            <p><strong>Bandeja Ositos</strong> <br>  12*540g<br> Código: 310086 <br> Precio: L. 90</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Bandeja Culebritas.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+            <p><strong>Bandeja Culebra Transp </strong><br>12*540g<br> Código: 310087<br> Precio: L. 90</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Bandeja Platanitos.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Bandeja Platanitos</strong><br>  12*540g <br>Código:310088<br> Precio: L. 90</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Crismelos gusanito.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Crismelos Gusanito 1</strong><br>Caja x 12 Frascos x 160 Und<br> Código: 310010<br> Precio:  L. 120</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Bandeja corazones.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Bandeja Corazones</strong><br>12*540g<br>Código: 310090<br> Precio: L.90</p>
+        </div>
+        <div class="product">
+            <img src="Guandy/Bandeja aros sandia.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Bandeja Aros Sandia</strong><br>12*540g<br>Código: 310089<br> Precio: L.90</p>
+        </div>
+     <span class="center-button" onclick="showPage('GUANDI')">⬅ Volver</span>
+    </div>
+            <!---------------------------------------------------------------------------->
+     <!-- Página Nutresa -->
+     <div id="Nutresa" class="container line-list fade-in">
+        <h2>Líneas Nutresa</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Chocolisto')">
+                <img src="https://i.imgur.com/XCkSGpL.jpeg" alt="Torrefacto">
+                <p><strong>Chocolisto</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Avena/granola')">
+                <img src="https://i.imgur.com/gWJmErh.jpeg" alt="Puro">
+                <p><strong>Avena/granola</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Granuts 180 g')">
+                <img src="https://i.imgur.com/tioYMYV.jpeg" alt="Puro">
+                <p><strong>Granuts 180 g</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Granuts 130g')">
+                <img src="https://i.imgur.com/k8NIvAU.jpeg" alt="Puro">
+                <p><strong>Granuts 130 g</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Grajeas')">
+                <img src="https://i.imgur.com/jecRq4Y.jpeg" alt="Puro">
+                <p><strong>Grajeas</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa Granuts 45g')">
+                <img src="https://i.imgur.com/gUKg2L9.jpeg" alt="Puro">
+                <p><strong>Granuts 45g</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Nutresa DISPLAYS')">
+                <img src="https://i.imgur.com/f5ZD0uf.jpeg" alt="Puro">
+                <p><strong>Displays</strong></p>
+            </a>
+        </div>
+      <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+ <!-- Página Nutresa Chocolisto -->
+         <div id="Nutresa Chocolisto" class="container product-list fade-in">
+            <h2>Productos Nutresa Chocolisto</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/eY9f3a4.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto Tarro</strong> <br>12x300g<br> Código: 340010 <br> Precio: L. 49</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/1Oyn4Up.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto Fresa</strong><br>24x200g<br> Código: 340011<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/XCkSGpL.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto</strong><br> 18x200g <br>Código:340013<br> Precio: L. 34</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/yxQietu.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto ristra</strong><br>25x12x14g <br> Código: 340016<br> Precio:  L. 34</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/e1qLX7c.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto sin azúcar</strong><br>18 x 180g<br>Código: 340020<br> Precio: L.42</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/3lNOtjd.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto</strong><br>12x360g <br>Código: 340024<br> Precio: L.67</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/Z6nOhoT.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolisto Marshmallows</strong><br>24x200g<br>Código: 340026<br> Precio: L.45</p>
+            </div>
+          <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+ <!-- Página Nutresa Avena/granola -->
+         <div id="Nutresa Avena/granola" class="container product-list fade-in">
+            <h2>Productos Nutresa Nutresa Chocolisto</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/eWDKoen.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>TOSH Granola Semilla Chia</strong> <br>16x300g<br> Código: 350018 <br> Precio: L. 52</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/gWJmErh.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>TOSH Granola Avena Pasas</strong><br>16x300g<br> Código: 350017<br> Precio: L. 52</p>
+            </div>
+            <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+<!-- Página Nutresa Granuts 180 g -->
+          <div id="Nutresa Granuts 180 g" class="container product-list fade-in">
+            <h2>Productos Nutresa Granuts 180 g</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/zXQlDv3.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Party Mix</strong> <br>180gx180g<br> Código: 390063 <br> Precio: L. 82</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/0UE2E6S.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Sweet&Salty dp</strong><br>12x180g<br> Código: 390067<br> Precio: L. 57</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/B1j0BZM.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mezcla nueces Granuts</strong><br>180G 12x180g <br>Código:390060<br> Precio: L. 105</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/e6WucjZ.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mezcla de Arándanos</strong><br>180g 12x180g <br> Código: 390061<br> Precio:  L. 105</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/tioYMYV.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Barbacoa Mix</strong><br>180g<br>Código: 390070<br> Precio: L.82</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/lKN1VND.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Mezcla con Tajín</strong><br>180g 12x1800g <br>Código: 390071<br> Precio: L.53</p>
+            </div>
+          <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+ <!-- Página Nutresa Granuts 130g -->
+           <div id="Nutresa Granuts 130g" class="container product-list fade-in">
+            <h2>Productos Nutresa Granuts 130g</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/BoYwcMF.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Arandamix 130 gramos</strong> <br>14x130g<br> Código: 390047<br> Precio: L. 48</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/k8NIvAU.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Crema & Cebolla</strong><br>130g<br> Código: 390068<br> Precio: L. 48</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/k8NIvAU.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Fiestamix 130 gramos</strong><br> 14x130g <br>Código:390048<br> Precio: L. 48</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/jpjjMU6.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Grillmix 130 gramos</strong><br>14x130g <br> Código: 390049<br> Precio:  L. 48</p>
+            </div>
+          <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+<!-- Página Nutresa Grajeas-->
+          <div id="Nutresa Grajeas" class="container product-list fade-in">
+            <h2>Productos Nutresa Grajeas</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/0ejby1F.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Gragea arándanos</strong> <br>8x10x50g<br> Código: 390018<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/Phlociw.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Gragea Marañon</strong><br>8x10x40g<br> Código: 390069<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/a3k1wI8.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Gragea Almendra</strong><br>Tostada 8x10x40g<br>Código:390020<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/jecRq4Y.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Gragea Pasas</strong><br>8x10x45g<br> Código: 390019<br> Precio:  L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/CrKdE2p.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Balones Nutresa Frasco</strong><br>12x742.5g<br> Código: 360005<br> Precio:  L. 105</p>
+            </div>
+           <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+ <!-- Página Nutresa Granuts 45g-->
+          <div id="Nutresa Granuts 45g" class="container product-list fade-in">
+            <h2>Productos Nutresa Granuts 45g</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/nP2So1O.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mezcla nueces Granuts</strong> <br>540g 8x12x45g<br> Código: 390058<br> Precio: L. 28</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/y0jpcBd.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mezcla arándanos Granuts</strong><br>540G 8x12x45g<br> Código: 390059<br> Precio: L. 28</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/gUKg2L9.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Party Mix</strong><br>540g 8x12x45g<br>Código:390013<br> Precio: L. 25</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/BxDVZJ3.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Maíz con Chile</strong><br>8x12x40g<br> Código: 390065<br> Precio:  L. 25</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/KlpF816.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mani con pasas Granuts</strong><br>540 g8x12x45g<br> Código: 390057<br> Precio:  L. 30</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/2qjjRd8.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>GRANUTS Nueces Tajín</strong><br>8x12x40g<br> Código: <br> Precio:  L. 28</p>
+            </div>
+           <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+ <!-- Página Nutresa DISPLAYS-->
+          <div id="Nutresa DISPLAYS" class="container product-list fade-in">
+            <h2>Productos Nutresa DISPLAYS</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/ca5ZJHp.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Maní con pasas GRANUTS 600g</strong> <br>8x12x50g<br> Código: 390004<br> Precio: L. 230</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/S9NCSPI.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Mezcla arándanos GRANUTS 600g</strong><br>8x12x50g<br> Código: 390006<br> Precio: L. 230</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/f5ZD0uf.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Mezcla de nueces GRANUTS 480g</strong><br> 8x12x45g? <br>Código:390058<br> Precio: L. 180</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/g7GXvgE.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Granuts Surtido </strong><br>555g<br><br> Código: 390056<br> Precio:  L. 230</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/6Rh2lrF.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>GRANUTS Surtido</strong><br>520g<br><br>Código: 390066<br> Precio:  L. 230</p>
+            </div>
+           <span class="center-button" onclick="showPage('Nutresa')">⬅ Volver</span>
+        </div>
+<!---------------------------------------------------------------------------->
+     <!-- Página Best -->
+     <div id="Best" class="container line-list fade-in">
+        <h2>Líneas Best</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Galleta')">
+                <img src="https://i.imgur.com/Dk5Ynds.jpeg" alt="Torrefacto">
+                <p><strong>Galleta</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Chocopanda')">
+                <img src="https://i.imgur.com/ce9qcYs.jpeg" alt="Puro">
+                <p><strong>Chocopanda</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Formado')">
+                <img src="https://i.imgur.com/jECy3Ag.jpeg" alt="Puro">
+                <p><strong>Formado</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Confitado')">
+                <img src="https://i.imgur.com/naGYiIp.jpeg" alt="Puro">
+                <p><strong>Confitado</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Cobertura')">
+                <img src="https://i.imgur.com/kqUUSL7.jpeg" alt="Puro">
+                <p><strong>Cobertura</strong></p>
+            </a>
+        </div>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Best Display')">
+                <img src="https://i.imgur.com/6XU7Av2.jpeg" alt="Puro">
+                <p><strong>Display</strong></p>
+            </a>
+        </div>
+        <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+ <!-- Página Best galleta-->
+          <div id="Best Galleta" class="container product-list fade-in">
+            <h2>Productos Best Galleta</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/f3Ftn47.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Galleta Best </strong> <br>xl 40gr 24 bolsa 12 und<br> Código: 370003<br> Precio: L. 60</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/VzEvw8L.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chapetin </strong><br>24 X 12 und<br> Código: 370005<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/hYaH5F0.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Galleta Best Chocolate oscuro</strong><br> 24 paq 12 und <br>Código:370030<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/Iek6Smc.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Galleta Best fresa </strong><br>24 paquetes de 12 und <br> 370037<br> Precio:  L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/Y9KIROj.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Galleta Best Vainilla</strong><br>24 paquetes de 12 und<br> Código: 370074<br> Precio:  L.37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/Dk5Ynds.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Galleta Best </strong><br> 20g 24 paq de 12 und <br>Código:370040<br> Precio: L. 37</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/9Fy3Ld4.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Galleta Manicotti</strong><br> 24 paq x 12 und 34gr  <br> Código:370044<br> Precio:  L. 57</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/9Fy3Ld4.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Manicotti </strong><br>24 paquetes de 12 und<br> Código: 370074<br> Precio:  L.37</p>
+            </div>
+           <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+        </div>
+     <!-- Página Best Chocopanda-->
+          <div id="Best Chocopanda" class="container product-list fade-in">
+            <h2>Productos Best Chocopanda</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/7n8doOS.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocopanda Doy pack </strong> <br>24 bolsas 200 gr<br> Código: 370033<br> Precio: L. 30</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/ce9qcYs.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocopanda </strong><br>36 paq x285 gr<br> Código: 370032<br> Precio: L. 40</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/UZ4c9IN.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chocopanda bote </strong><br> 400gr 24 unidades <br>Código:370035<br> Precio: L. 63</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/N4m0a3b.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocopanda ristra</strong><br>25x12x14g<br> Código:370006<br> Precio:  L. 29</p>
+            </div>
+           <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+        </div>     
+ <!-- Página Best Formado-->
+         <div id="Best Formado" class="container product-list fade-in">
+            <h2>Productos Best Formado</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/qBVGjsM.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Conito</strong> <br> 90 bolsa de 10 und<br> Código: 370056<br> Precio: L. 15</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/y5AkiFt.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Chocolate Relleno Doypack </strong><br>212.5g 24Bolsasx25Und<br> Código: 370053<br> Precio: L. 40</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/AnpY5io.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Chocogol  </strong><br> 50x40 4g <br>Código:370058<br> Precio: L. 35</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/KZ7pZTW.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Conito </strong><br>30 x 80 un x 7g<br> Código:370060<br> Precio:  L. 91</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/jECy3Ag.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Galleta Best Chocolate oscuro </strong><br>24 paq 12 und<br> Código:370047<br> Precio:  L. 20</p>
+            </div>
+           <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+        </div>     
+       <!-- Página Best Confitado-->
+         <div id="Best Confitado" class="container product-list fade-in">
+            <h2>Productos Best Confitado</h2>
+            <div class="product">
+                <img src="https://i.imgur.com/aEtTWGx.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botonetas Choco 40</strong> <br> Ristras 12U 9G -BL<br> Código: 370066<br> Precio: L. 21</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/2To0W70.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botoneta Maní</strong><br>40Ristrasx12Ux9G<br> Código: 370065<br> Precio: L. 21</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/plrJzsn.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Botoneta maní doypack</strong><br>85g 1 x 52 bolsas<br>Código:370068<br> Precio: L. 23</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/QjQf3Dj.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botoneta chocolate doypack</strong><br>85g 1 X 52 bolsas<br> Código:370069<br> Precio:  L. 23</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/naGYiIp.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botoneta Chocolate</strong><br>20x24x9g<br> Código:370072<br> Precio:  L. 57</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/VcysOxN.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+            <p><strong>Botoneta Mani Cobert</strong><br>Choco 240g, 36 Bsx12 und<br>Código:370051<br> Precio: L. 45</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/hhOom7M.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botoneta Chocolate</strong><br>240g 36Bolsasx12Und <br> Código:370052<br> Precio:  L. 45</p>
+            </div>
+            <div class="product">
+                <img src="https://i.imgur.com/VcysOxN.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+                <p><strong>Botoneta Maní</strong><br>20x24x9g<br> Código:370073<br> Precio:  L. 57</p>
+            </div>
+           <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+        </div>     
+      <!-- Página Best Cobertura-->
+<div id="Best Cobertura" class="container product-list fade-in">
+    <h2>Productos Best Cobertura</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/NjtXqFO.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chocofruta </strong> <br> 1x10x1400g<br> Código: 370027<br> Precio: L. 112</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/sgajEbY.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Choco Panda Syrup </strong><br>1C 12 botes 14 oz<br> Código: 370029<br> Precio: L. 73</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/kqUUSL7.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+    <p><strong>Botoneta Mani Cobert Choco</strong><br>240g, 36 Bsx12 und<br>Código:370057<br> Precio: L. 37</p>
+    </div>
+  <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+</div>     
+<!-- Página Best Display-->
+<div id="Best Display" class="container product-list fade-in">
+    <h2>Productos Best Display</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/RoF37bI.jpg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Chocogol  </strong> <br> 4g 20x170 und<br> Código: 370063<br> Precio: L. 91</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/6XU7Av2.jpg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Botonetas Gold 12</strong><br>display de 12 und de 50g<br> Código: 370075<br> Precio: L. 240</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/AHghiUQ.jpg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+    <p><strong>Best Piñata Mix</strong><br>12x734g<br>Código:370041<br> Precio: L. 125</p>
+    </div>
+  <span class="center-button" onclick="showPage('Best')">⬅ Volver</span>
+</div>     
+            <!---------------------------------------------------------------------------->
+    <!-- Página Molsa -->
+     <div id="Molsa" class="container line-list fade-in">
+        <h2>Líneas Molsa</h2>
+        <div class="line">
+            <a href="javascript:void(0)" onclick="showPage('Molsa Galleta')">
+                <img src="https://i.imgur.com/j7GEXUw.jpeg" alt="Torrefacto">
+                <p><strong>Galleta</strong></p>
+            </a>
+        </div>
+       <span class="center-button" onclick="showPage('main-page')">⬅ Volver</span>
+    </div>
+<!-- Página Molsa Galleta-->
+<div id="Molsa Galleta" class="container product-list fade-in">
+    <h2>Productos Molsa Galleta</h2>
+    <div class="product">
+        <img src="https://i.imgur.com/4cTPuz6.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Galletas CREME O! Chocolate</strong> <br> 24x12x22g<br> Código: 420006<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/TWMDYCw.jpeg" alt="Café Puro Maya 340g" onclick="toggleImageSize(this)">
+        <p><strong>Galletas Lolas Vainilla</strong><br> 24x12x15g<br> Código: 420005<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/j7GEXUw.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Galletas CREME O! vainilla </strong><br>24x12x22g<br> Código: 420007<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/TjhkYRI.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>Galletas CREME O! vainilla con relleno sabor vainilla</strong><br>24x12x22g<br> Código: 420008<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/t8QGrY1.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+    <p><strong>SAN ANDRES Rosquillas granuladas</strong><br>Código:420011<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/qaxB1X9.jpeg" alt="Coffe Club Molido 340g" onclick="toggleImageSize(this)">
+        <p><strong>SAN ANDRES Rosquillas de vainilla</strong><br> Código: 420010<br> Precio: L. 21</p>
+    </div>
+    <div class="product">
+        <img src="https://i.imgur.com/42QjI2c.jpeg" alt="Coffe Club Grano 340g" onclick="toggleImageSize(this)">
+    <p><strong>SAN ANDRES Rosquillas de coco</strong><br>Código:420009<br> Precio: L. 21</p>
+    </div>
+  <span class="center-button" onclick="showPage('Molsa')">⬅ Volver</span>
+</div>   
+
+
+
+
+<footer>
+    <div class="footer-container">
+        <img src="https://i.imgur.com/VdqGBDs.png" alt="Logo" class="footer-logo">
+        <p>&copy; 2025 BIA HONDURAS. Todos los derechos reservados.</p>
+        <p><a href="#">Política de Privacidad</a> | <a href="#">Términos y Condiciones</a></p>
+    </div>
+</footer>
+
+</body>
+</html>
+
+
+   
+
+
+
