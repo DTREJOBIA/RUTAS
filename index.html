@@ -151,17 +151,18 @@
             margin-bottom: 10px;
         }
 
-        .background-image {
-            background: url('https://i.imgur.com/vNb30jA.jpeg') no-repeat center center fixed;
-            background-size: cover;
-            opacity: 0.3;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
+    .background-image {
+    background: url('https://i.imgur.com/vNb30jA.jpeg') no-repeat center center;
+    background-attachment: fixed;
+    background-size: cover;
+    opacity: 0.3;
+    position: fixed; /* CAMBIADO de absolute a fixed */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
 
         .center-button {
             position: fixed;
