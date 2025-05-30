@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Visor de Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Clientes</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         /* Estilos generales y reseteo básico */
@@ -15,76 +16,69 @@
             line-height: 1.6;
         }
 
-        /* Contenedor principal para centrar el contenido */
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 15px;
-            box-sizing: border-box;
-        }
-
         /* Encabezado */
         h2 {
             text-align: center;
             color: #2c3e50;
-            margin-bottom: 20px;
-            font-size: 1.8em; /* Tamaño de fuente adaptable */
+            margin: 20px 0; /* Ajuste el margen superior e inferior */
+            font-size: 1.8em;
             border-bottom: 2px solid #007bff;
             padding-bottom: 10px;
-            display: inline-block; /* Para que el borde se ajuste al texto */
+            display: inline-block;
             margin-left: auto;
             margin-right: auto;
-            display: block; /* Para centrar el inline-block */
+            display: block;
+            max-width: 90%; /* Limita el ancho del título para pantallas grandes */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho */
         }
 
         /* Mensajes de estado */
         #mensaje {
             padding: 10px;
-            margin-bottom: 15px;
+            margin: 0 15px 15px; /* Margen a los lados para que no choque con los bordes de la pantalla */
             border-radius: 8px;
             font-weight: bold;
             text-align: center;
-            background-color: #e0f2f7; /* Fondo para mensajes azules */
-            color: #007bff; /* Color de texto para mensajes azules */
+            background-color: #e0f2f7;
+            color: #007bff;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        #mensaje.success { /* Estilo para mensajes de éxito */
+        #mensaje.success {
             background-color: #e6ffed;
             color: #28a745;
         }
-        #mensaje.error { /* Estilo para mensajes de error */
+        #mensaje.error {
             background-color: #ffe6e6;
             color: #dc3545;
         }
-        #mensaje.warning { /* Estilo para mensajes de advertencia */
+        #mensaje.warning {
             background-color: #fff9e6;
             color: #ffc107;
         }
 
-
         /* Contenedor de filtros y botones */
         .filtros {
             padding: 15px;
-            background: #ffffff; /* Fondo blanco para la barra de filtros */
+            background: #ffffff;
             display: flex;
             flex-wrap: wrap;
-            gap: 12px; /* Espacio entre elementos */
+            gap: 12px;
             align-items: center;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
-            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 0 15px 20px; /* Margen a los lados para que no choque con los bordes de la pantalla */
         }
 
         /* Estilos de los selectores e input */
         .filtros select,
         .filtros input[type="text"] {
-            flex: 1; /* Permite que los elementos crezcan */
+            flex: 1;
             padding: 10px;
             font-size: 1em;
             border: 1px solid #ccc;
             border-radius: 5px;
-            min-width: 150px; /* Ancho mínimo para elementos */
-            box-sizing: border-box; /* Incluye padding y borde en el ancho */
+            min-width: 150px;
+            box-sizing: border-box;
         }
 
         /* Estilos de los botones */
@@ -95,7 +89,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            white-space: nowrap; /* Evita que el texto del botón se rompa */
+            white-space: nowrap;
         }
 
         /* Estilo para el botón de búsqueda */
@@ -106,12 +100,12 @@
         }
         #botonBuscar:hover {
             background-color: #0056b3;
-            transform: translateY(-1px); /* Efecto de elevación */
+            transform: translateY(-1px);
         }
 
         /* Estilo para el botón de ubicación actual */
         #ubicacionActualBtn {
-            background-color: #28a745; /* Verde para ubicación */
+            background-color: #28a745;
             color: white;
             border: none;
         }
@@ -122,65 +116,67 @@
 
         /* Estilos del mapa */
         #map {
-            height: 70vh; /* Ajustado ligeramente para más espacio */
-            width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            /* Eliminamos el contenedor y ajustamos el mapa directamente */
+            height: calc(100vh - 200px); /* Ocupa el 100% del alto de la ventana menos el espacio del título y filtros */
+            width: 100%; /* Ocupa el 100% del ancho de la ventana */
+            border-radius: 0; /* Elimina el border-radius para que sea de borde a borde */
+            box-shadow: none; /* Elimina la sombra para que se integre mejor */
+            margin-top: 0; /* Asegura que no haya margen superior */
         }
 
         /* Media Queries para responsividad */
         @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5em;
+                margin: 15px 0;
+            }
+            #mensaje, .filtros {
+                margin: 0 10px 15px; /* Ajuste el margen a los lados para pantallas pequeñas */
+            }
             .filtros {
-                flex-direction: column; /* Apila los filtros en columnas */
-                align-items: stretch; /* Estira los elementos al 100% */
+                flex-direction: column;
+                align-items: stretch;
             }
             .filtros select,
             .filtros input[type="text"],
             .filtros button {
-                width: 100%; /* Ocupan todo el ancho disponible */
-                min-width: unset; /* Elimina el mínimo ancho */
-            }
-            h2 {
-                font-size: 1.5em;
+                width: 100%;
+                min-width: unset;
             }
             #map {
-                height: 60vh; /* Mapa un poco más pequeño en móviles */
-            }
-            .container {
-                margin: 10px auto;
-                padding: 0 10px;
+                height: calc(100vh - 180px); /* Ajuste de altura para móviles */
             }
         }
     </style>
 </head>
 <body>
-    <div class="container"> <h2>Visor de Clientes en el Mapa</h2>
-        <div id="mensaje">Cargando datos...</div>
+    <h2>Visor de Clientes en el Mapa</h2>
+    <div id="mensaje">Cargando datos...</div>
 
-        <div class="filtros">
-            <select id="ruta"><option value="">Ruta</option></select>
-            <select id="semana"><option value="">Semana</option></select>
-            <select id="dia"><option value="">Día de Visita</option></select>
-            <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
-            <button id="botonBuscar">Buscar</button>
-            <button id="ubicacionActualBtn">Mi Ubicación</button> </div>
+    <div class="filtros">
+        <select id="ruta"><option value="">Ruta</option></select>
+        <select id="semana"><option value="">Semana</option></select>
+        <select id="dia"><option value="">Día de Visita</option></select>
+        <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
+        <button id="botonBuscar">Buscar</button>
+        <button id="ubicacionActualBtn">Mi Ubicación</button>
+    </div>
 
-        <div id="map"></div>
-    </div> <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         let clientes = [];
         let marcadores = [];
         let mapa;
-        let ubicacionActualMarker; // Para guardar el marcador de la ubicación actual
+        let ubicacionActualMarker;
 
-        // Función auxiliar para manejar mensajes de estado con clases CSS
         function setMensaje(text, type = "info") {
             const mensaje = document.getElementById("mensaje");
             mensaje.textContent = text;
-            mensaje.className = ""; // Limpiar clases existentes
-            mensaje.classList.add(type); // Añadir la clase de tipo
+            mensaje.className = "";
+            mensaje.classList.add(type);
         }
-
 
         async function cargarDatos() {
             setMensaje("Cargando datos...", "info");
@@ -209,7 +205,6 @@
 
                 inicializarMapa();
                 inicializarFiltros();
-                // Inicializar el botón de ubicación
                 document.getElementById("ubicacionActualBtn").addEventListener("click", mostrarUbicacionActual);
 
             } catch (error) {
@@ -219,9 +214,9 @@
 
         function inicializarMapa() {
             if (mapa) {
-                mapa.remove(); // Elimina el mapa existente si ya fue inicializado
+                mapa.remove();
             }
-            mapa = L.map("map").setView([14.6349, -90.5069], 7); // Coordenadas de ejemplo (Guatemala)
+            mapa = L.map("map").setView([14.6349, -90.5069], 7);
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 attribution: "© OpenStreetMap contributors"
             }).addTo(mapa);
@@ -332,18 +327,18 @@
             marcadores.forEach(m => mapa.removeLayer(m));
             marcadores = [];
 
-            if (ubicacionActualMarker) { // Asegura que el marcador de ubicación actual se mantenga
+            if (ubicacionActualMarker) {
                 ubicacionActualMarker.addTo(mapa);
-                marcadores.push(ubicacionActualMarker); // Añadirlo para que `fitBounds` lo considere
+                marcadores.push(ubicacionActualMarker);
             }
 
             if (lista.length === 0) {
-                if (marcadores.length === 0) { // Si no hay clientes ni marcador de ubicación
+                if (marcadores.length === 0) {
                     if (mapa && mapa.getBounds().isValid()) {
                         mapa.setView([14.6349, -90.5069], 7);
                     }
-                } else { // Si solo hay marcador de ubicación
-                    mapa.setView(ubicacionActualMarker.getLatLng(), 13); // Centrar en la ubicación actual con zoom
+                } else {
+                    mapa.setView(ubicacionActualMarker.getLatLng(), 15); // Zoom un poco más cercano para solo ubicación
                 }
                 return;
             }
@@ -380,7 +375,7 @@
 
             if (marcadores.length > 0) {
                 const grupo = L.featureGroup(marcadores);
-                mapa.fitBounds(grupo.getBounds(), { padding: [20, 20] }); // Añadir un pequeño padding
+                mapa.fitBounds(grupo.getBounds(), { padding: [20, 20] });
             }
         }
 
@@ -410,7 +405,6 @@
             mostrarMarcadores(coincidencias);
         }
 
-        // --- Nuevas funciones para la ubicación actual ---
         function mostrarUbicacionActual() {
             if ("geolocation" in navigator) {
                 setMensaje("Obteniendo tu ubicación actual...", "info");
@@ -419,30 +413,27 @@
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
 
-                        // Eliminar marcador anterior si existe
                         if (ubicacionActualMarker) {
                             mapa.removeLayer(ubicacionActualMarker);
                         }
 
-                        // Crear un marcador para la ubicación actual (puede ser un icono personalizado)
                         ubicacionActualMarker = L.marker([lat, lon], {
-                            icon: L.divIcon({ // Usar un icono personalizado para diferenciar
+                            icon: L.divIcon({
                                 className: 'ubicacion-actual-icon',
                                 html: '<div style="background-color: #28a745; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
-                                iconSize: [26, 26], // Tamaño total del icono
-                                iconAnchor: [13, 13] // Punto de anclaje central
+                                iconSize: [26, 26],
+                                iconAnchor: [13, 13]
                             })
                         }).addTo(mapa)
                           .bindPopup("¡Estás aquí!").openPopup();
 
-                        mapa.setView([lat, lon], 15); // Centra y hace zoom en la ubicación actual
+                        mapa.setView([lat, lon], 15);
 
-                        // Resetear filtros y mostrar solo la ubicación actual, o agregar a clientes si hay filtros
                         document.getElementById("ruta").value = "";
                         document.getElementById("semana").value = "";
                         document.getElementById("dia").value = "";
-                        actualizarFiltroSemana(); // Repuebla los selects
-                        mostrarMarcadores([]); // Limpia los marcadores de clientes (si los había), pero mantiene el de ubicación
+                        actualizarFiltroSemana();
+                        mostrarMarcadores([]); // Limpia marcadores de clientes, manteniendo solo la ubicación actual
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
@@ -470,7 +461,6 @@
                 setMensaje("La geolocalización no está soportada por tu navegador.", "error");
             }
         }
-        // --- Fin nuevas funciones ---
 
         window.onload = cargarDatos;
     </script>
