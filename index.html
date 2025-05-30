@@ -20,8 +20,7 @@
     <select id="ruta"><option value="">Ruta</option></select>
     <select id="semana"><option value="">Semana</option></select>
     <select id="dia"><option value="">Día de Visita</option></select>
-
-    <input type="text" id="busqueda" placeholder="Buscar por nombre o código" oninput="buscarCliente()" />
+    <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
   </div>
 
   <div id="map"></div>
@@ -75,9 +74,13 @@
     }
 
     function inicializarFiltros() {
-      document.getElementById("ruta").addEventListener("change", actualizarSemanaYDia);
+      document.getElementById("ruta").addEventListener("change", () => {
+        actualizarSemanaYDia();
+        aplicarFiltros();
+      });
       document.getElementById("semana").addEventListener("change", aplicarFiltros);
       document.getElementById("dia").addEventListener("change", aplicarFiltros);
+      document.getElementById("busqueda").addEventListener("input", buscarCliente);
       actualizarRuta();
     }
 
@@ -95,8 +98,6 @@
 
       actualizarSelect("semana", semanas);
       actualizarSelect("dia", dias);
-
-      aplicarFiltros();
     }
 
     function actualizarSelect(id, valores) {
@@ -136,9 +137,23 @@
         if (isNaN(lat) || isNaN(lon)) return;
 
         const marcador = L.marker([lat, lon]).addTo(mapa);
-        const info = Object.entries(cliente)
-          .map(([k, v]) => `<b>${k}</b>: ${v}`)
-          .join("<br>");
+        const info = `
+          <b>Código:</b> ${cliente["Código"] || ""}<br>
+          <b>Nombre:</b> ${cliente["Nombre"] || ""}<br>
+          <b>Ruta:</b> ${cliente["Ruta"] || ""}<br>
+          <b>Semana:</b> ${cliente["Semana"] || ""}<br>
+          <b>Día:</b> ${cliente["Día de Visita"] || ""}<br>
+          <b>Dirección:</b> ${cliente["Dirección"] || ""}<br>
+          <b>Teléfono:</b> ${cliente["Teléfono"] || ""}<br>
+          <b>ID:</b> ${cliente["ID"] || ""}<br>
+          <b>RTN:</b> ${cliente["RTN"] || ""}<br>
+          <b>Canal:</b> ${cliente["Canal"] || ""}<br>
+          <b>Supervisor:</b> ${cliente["Supervisor"] || ""}<br>
+          <b>Región:</b> ${cliente["Región"] || ""}<br>
+          <b>Sucursal:</b> ${cliente["Sucursal"] || ""}<br>
+          <b>Departamento:</b> ${cliente["Departamento"] || ""}<br>
+          <b>Municipio:</b> ${cliente["Municipio"] || ""}`;
+
         marcador.bindPopup(info);
         marcadores.push(marcador);
       });
@@ -165,4 +180,3 @@
   </script>
 </body>
 </html>
-
