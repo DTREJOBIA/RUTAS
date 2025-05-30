@@ -63,12 +63,13 @@
         }
 
         clientes = datos;
-        mensaje.textContent = "Datos cargados correctamente.";
+        mensaje.textContent = "Datos cargados. Usa los filtros o el buscador para ver los clientes.";
         mensaje.style.color = "green";
 
         inicializarMapa();
         inicializarFiltros();
-        mostrarMarcadores(clientes);
+        // No mostrar todos los marcadores al inicio para evitar sobrecarga
+        // mostrarMarcadores(clientes);
       } catch (error) {
         mensaje.textContent = "Error al cargar datos: " + error.message;
         mensaje.style.color = "red";
@@ -208,9 +209,3 @@
   </script>
 </body>
 </html>
-
-
-   
-
-
-
