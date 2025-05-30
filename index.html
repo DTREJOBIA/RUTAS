@@ -2,88 +2,225 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Visor de Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Visor de Clientes</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        #map { height: 80vh; width: 100%; }
-        .filtros { padding: 10px; background: #f0f0f0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        .filtros select, .filtros input, .filtros button { padding: 5px; font-size: 14px; }
-        #mensaje { padding: 5px; font-weight: bold; text-align: center; }
+        /* Estilos generales y reseteo básico */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6; /* Fondo suave */
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Contenedor principal para centrar el contenido */
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* Encabezado */
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em; /* Tamaño de fuente adaptable */
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 10px;
+            display: inline-block; /* Para que el borde se ajuste al texto */
+            margin-left: auto;
+            margin-right: auto;
+            display: block; /* Para centrar el inline-block */
+        }
+
+        /* Mensajes de estado */
+        #mensaje {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            background-color: #e0f2f7; /* Fondo para mensajes azules */
+            color: #007bff; /* Color de texto para mensajes azules */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #mensaje.success { /* Estilo para mensajes de éxito */
+            background-color: #e6ffed;
+            color: #28a745;
+        }
+        #mensaje.error { /* Estilo para mensajes de error */
+            background-color: #ffe6e6;
+            color: #dc3545;
+        }
+        #mensaje.warning { /* Estilo para mensajes de advertencia */
+            background-color: #fff9e6;
+            color: #ffc107;
+        }
+
+
+        /* Contenedor de filtros y botones */
+        .filtros {
+            padding: 15px;
+            background: #ffffff; /* Fondo blanco para la barra de filtros */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px; /* Espacio entre elementos */
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
+            margin-bottom: 20px;
+        }
+
+        /* Estilos de los selectores e input */
+        .filtros select,
+        .filtros input[type="text"] {
+            flex: 1; /* Permite que los elementos crezcan */
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-width: 150px; /* Ancho mínimo para elementos */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho */
+        }
+
+        /* Estilos de los botones */
         .filtros button {
+            padding: 10px 15px;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            white-space: nowrap; /* Evita que el texto del botón se rompa */
+        }
+
+        /* Estilo para el botón de búsqueda */
+        #botonBuscar {
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
-        .filtros button:hover {
+        #botonBuscar:hover {
             background-color: #0056b3;
+            transform: translateY(-1px); /* Efecto de elevación */
+        }
+
+        /* Estilo para el botón de ubicación actual */
+        #ubicacionActualBtn {
+            background-color: #28a745; /* Verde para ubicación */
+            color: white;
+            border: none;
+        }
+        #ubicacionActualBtn:hover {
+            background-color: #1e7e34;
+            transform: translateY(-1px);
+        }
+
+        /* Estilos del mapa */
+        #map {
+            height: 70vh; /* Ajustado ligeramente para más espacio */
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Media Queries para responsividad */
+        @media (max-width: 768px) {
+            .filtros {
+                flex-direction: column; /* Apila los filtros en columnas */
+                align-items: stretch; /* Estira los elementos al 100% */
+            }
+            .filtros select,
+            .filtros input[type="text"],
+            .filtros button {
+                width: 100%; /* Ocupan todo el ancho disponible */
+                min-width: unset; /* Elimina el mínimo ancho */
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            #map {
+                height: 60vh; /* Mapa un poco más pequeño en móviles */
+            }
+            .container {
+                margin: 10px auto;
+                padding: 0 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <h2 style="text-align:center">Visor de Clientes en el Mapa</h2>
-    <div id="mensaje">Cargando datos...</div>
+    <div class="container"> <h2>Visor de Clientes en el Mapa</h2>
+        <div id="mensaje">Cargando datos...</div>
 
-    <div class="filtros">
-        <select id="ruta"><option value="">Ruta</option></select>
-        <select id="semana"><option value="">Semana</option></select>
-        <select id="dia"><option value="">Día de Visita</option></select>
-        <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
-        <button id="botonBuscar">Buscar</button>
-    </div>
+        <div class="filtros">
+            <select id="ruta"><option value="">Ruta</option></select>
+            <select id="semana"><option value="">Semana</option></select>
+            <select id="dia"><option value="">Día de Visita</option></select>
+            <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
+            <button id="botonBuscar">Buscar</button>
+            <button id="ubicacionActualBtn">Mi Ubicación</button> </div>
 
-    <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <div id="map"></div>
+    </div> <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         let clientes = [];
         let marcadores = [];
         let mapa;
+        let ubicacionActualMarker; // Para guardar el marcador de la ubicación actual
+
+        // Función auxiliar para manejar mensajes de estado con clases CSS
+        function setMensaje(text, type = "info") {
+            const mensaje = document.getElementById("mensaje");
+            mensaje.textContent = text;
+            mensaje.className = ""; // Limpiar clases existentes
+            mensaje.classList.add(type); // Añadir la clase de tipo
+        }
+
 
         async function cargarDatos() {
-            const mensaje = document.getElementById("mensaje");
-            mensaje.textContent = "Cargando datos...";
-            mensaje.style.color = "blue";
+            setMensaje("Cargando datos...", "info");
 
             try {
-                // Considera usar una URL de API si tu script es privado o tiene límites de uso.
-                // Para hojas de cálculo grandes, puede ser más eficiente que Google Apps Script.
                 const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todmvhK_rWH2JcH/exec");
-                if (!respuesta.ok) throw new Error("No se pudo conectar al servidor");
+                if (!respuesta.ok) throw new Error("No se pudo conectar al servidor.");
 
                 const datos = await respuesta.json();
 
                 if (!Array.isArray(datos) || datos.length === 0) {
-                    mensaje.textContent = "No se encontraron datos en la hoja.";
-                    mensaje.style.color = "red";
+                    setMensaje("No se encontraron datos en la hoja.", "warning");
                     return;
                 }
 
-                const obligatorios = ["Nombre", "Latitud", "Longitud", "Ruta"]; // Asegúrate de que Ruta sea obligatorio
+                const obligatorios = ["Nombre", "Latitud", "Longitud", "Ruta"];
                 for (let campo of obligatorios) {
                     if (!(campo in datos[0])) {
-                        mensaje.textContent = "Falta el campo requerido: " + campo + ". Asegúrate de que los encabezados de tu hoja de cálculo coincidan exactamente (ej. 'Ruta').";
-                        mensaje.style.color = "red";
+                        setMensaje(`Falta el campo requerido: ${campo}. Asegúrese de que los encabezados coincidan.`, "error");
                         return;
                     }
                 }
 
                 clientes = datos;
-                mensaje.textContent = "Datos cargados correctamente. Seleccione una ruta para ver clientes.";
-                mensaje.style.color = "green";
+                setMensaje("Datos cargados correctamente. Seleccione una ruta para ver clientes.", "success");
 
                 inicializarMapa();
                 inicializarFiltros();
+                // Inicializar el botón de ubicación
+                document.getElementById("ubicacionActualBtn").addEventListener("click", mostrarUbicacionActual);
+
             } catch (error) {
-                mensaje.textContent = "Error al cargar datos: " + error.message;
-                mensaje.style.color = "red";
+                setMensaje(`Error al cargar datos: ${error.message}`, "error");
             }
         }
 
         function inicializarMapa() {
+            if (mapa) {
+                mapa.remove(); // Elimina el mapa existente si ya fue inicializado
+            }
             mapa = L.map("map").setView([14.6349, -90.5069], 7); // Coordenadas de ejemplo (Guatemala)
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 attribution: "© OpenStreetMap contributors"
@@ -91,25 +228,20 @@
         }
 
         function inicializarFiltros() {
-            // Evento para el filtro de Ruta
             document.getElementById("ruta").addEventListener("change", () => {
-                // Al cambiar la ruta, limpiar Semana y Día para forzar que se repueblen
                 document.getElementById("semana").value = "";
                 document.getElementById("dia").value = "";
-                actualizarFiltroSemana(); // Esto actualizará Semana y luego Día
-                aplicarFiltros(); // Aplica los filtros incluyendo la nueva ruta
+                actualizarFiltroSemana();
+                aplicarFiltros();
             });
 
-            // Eventos para Semana y Día (solo aplican filtros, no repueblan otros selects)
             document.getElementById("semana").addEventListener("change", () => {
-                actualizarFiltroDia(); // Al cambiar semana, actualiza los días disponibles
+                actualizarFiltroDia();
                 aplicarFiltros();
             });
             document.getElementById("dia").addEventListener("change", aplicarFiltros);
 
-            // Eventos para la búsqueda
             document.getElementById("busqueda").addEventListener("input", function() {
-                // Dispara la búsqueda solo si el campo se vacía
                 if (this.value === "") {
                     buscarCliente();
                 }
@@ -120,62 +252,51 @@
         }
 
         function cargarFiltroRutaInicial() {
-            // Obtener todas las rutas únicas y ordenarlas
             const todasRutas = [...new Set(clientes.map(c => c["Ruta"]).filter(Boolean))].sort();
-            actualizarSelect("ruta", todasRutas, "Ruta"); // Usa "Ruta" como texto del placeholder
+            actualizarSelect("ruta", todasRutas, "Ruta");
 
-            // No mostrar nada al inicio, solo el placeholder y el mensaje
-            document.getElementById("mensaje").textContent = "Seleccione una ruta para ver clientes en el mapa.";
-            document.getElementById("mensaje").style.color = "blue";
-            mostrarMarcadores([]); // Asegúrate de que el mapa esté vacío
-            actualizarFiltroSemana(); // Esto inicializará los filtros de semana y día (vacíos)
+            setMensaje("Seleccione una ruta para ver clientes en el mapa.", "info");
+            mostrarMarcadores([]);
+            actualizarFiltroSemana();
         }
 
-        // Modificada para depender de la ruta seleccionada
         function actualizarFiltroSemana() {
             const rutaSeleccionada = document.getElementById("ruta").value;
             let semanas = [];
 
             if (rutaSeleccionada) {
-                // Filtra clientes solo por la ruta seleccionada
                 const clientesEnRuta = clientes.filter(c => c["Ruta"] === rutaSeleccionada);
-                // Obtiene semanas únicas de esos clientes
                 semanas = [...new Set(clientesEnRuta.map(c => c["Semana"]).filter(Boolean))].sort();
             }
-            actualizarSelect("semana", semanas, "Semana"); // Pasa "Semana" como placeholder
-            actualizarFiltroDia(); // Llama para actualizar los días después de las semanas
+            actualizarSelect("semana", semanas, "Semana");
+            actualizarFiltroDia();
         }
 
-        // Modificada para depender de la ruta y semana seleccionadas
         function actualizarFiltroDia() {
             const rutaSeleccionada = document.getElementById("ruta").value;
             const semanaSeleccionada = document.getElementById("semana").value;
             let dias = [];
 
             if (rutaSeleccionada) {
-                // Filtra primero por ruta
                 let clientesParaDias = clientes.filter(c => c["Ruta"] === rutaSeleccionada);
-                // Si hay semana seleccionada, filtra también por semana
                 if (semanaSeleccionada) {
                     clientesParaDias = clientesParaDias.filter(c => c["Semana"] === semanaSeleccionada);
                 }
-                // Obtiene días únicos de los clientes filtrados
                 dias = [...new Set(clientesParaDias.map(c => c["Día de Visita"]).filter(Boolean))].sort();
             }
-            actualizarSelect("dia", dias, "Día de Visita"); // Pasa "Día de Visita" como placeholder
+            actualizarSelect("dia", dias, "Día de Visita");
         }
 
-        // Función auxiliar para actualizar los selects de forma más genérica
         function actualizarSelect(id, valores, placeholderText) {
             const select = document.getElementById(id);
-            const seleccionado = select.value; // Guarda el valor actualmente seleccionado
-            select.innerHTML = `<option value="">${placeholderText}</option>`; // Restablece con el placeholder
+            const seleccionado = select.value;
+            select.innerHTML = `<option value="">${placeholderText}</option>`;
 
             valores.forEach(valor => {
                 const option = document.createElement("option");
                 option.value = valor;
                 option.textContent = valor;
-                if (valor === seleccionado) { // Intenta mantener la selección si el valor sigue disponible
+                if (valor === seleccionado) {
                     option.selected = true;
                 }
                 select.appendChild(option);
@@ -186,17 +307,13 @@
             const ruta = document.getElementById("ruta").value;
             const semana = document.getElementById("semana").value;
             const dia = document.getElementById("dia").value;
-            const mensaje = document.getElementById("mensaje");
 
-            // Si no hay ruta seleccionada, no mostrar nada
             if (!ruta) {
-                mensaje.textContent = "Seleccione una ruta para ver clientes en el mapa.";
-                mensaje.style.color = "blue";
+                setMensaje("Seleccione una ruta para ver clientes en el mapa.", "info");
                 mostrarMarcadores([]);
                 return;
             }
 
-            // Filtra los clientes basándose en la ruta (obligatoria) y semana/día (opcionales)
             const filtrados = clientes.filter(c =>
                 (c["Ruta"] === ruta) &&
                 (!semana || c["Semana"] === semana) &&
@@ -204,25 +321,29 @@
             );
 
             if (filtrados.length === 0) {
-                mensaje.textContent = "No se encontraron clientes para los filtros seleccionados en esta ruta.";
-                mensaje.style.color = "orange";
+                setMensaje("No se encontraron clientes para los filtros seleccionados en esta ruta.", "warning");
             } else {
-                mensaje.textContent = `Mostrando ${filtrados.length} cliente(s) en la ruta seleccionada.`;
-                mensaje.style.color = "green";
+                setMensaje(`Mostrando ${filtrados.length} cliente(s) en la ruta seleccionada.`, "success");
             }
             mostrarMarcadores(filtrados);
         }
 
         function mostrarMarcadores(lista) {
-            // Elimina marcadores existentes
             marcadores.forEach(m => mapa.removeLayer(m));
             marcadores = [];
 
+            if (ubicacionActualMarker) { // Asegura que el marcador de ubicación actual se mantenga
+                ubicacionActualMarker.addTo(mapa);
+                marcadores.push(ubicacionActualMarker); // Añadirlo para que `fitBounds` lo considere
+            }
+
             if (lista.length === 0) {
-                // Si la lista está vacía, reinicia el mapa a la vista inicial si no hay marcadores
-                // y evita intentar ajustar límites de un grupo vacío.
-                if (mapa && mapa.getBounds().isValid()) { // Solo si el mapa ya tiene una vista válida
-                     mapa.setView([14.6349, -90.5069], 7); // Vuelve a la vista de Guatemala
+                if (marcadores.length === 0) { // Si no hay clientes ni marcador de ubicación
+                    if (mapa && mapa.getBounds().isValid()) {
+                        mapa.setView([14.6349, -90.5069], 7);
+                    }
+                } else { // Si solo hay marcador de ubicación
+                    mapa.setView(ubicacionActualMarker.getLatLng(), 13); // Centrar en la ubicación actual con zoom
                 }
                 return;
             }
@@ -231,7 +352,6 @@
                 const lat = parseFloat(cliente["Latitud"]);
                 const lon = parseFloat(cliente["Longitud"]);
 
-                // Validar coordenadas: si no son números válidos, se ignora este cliente
                 if (isNaN(lat) || isNaN(lon)) {
                     console.warn(`Cliente "${cliente["Nombre"] || cliente["Código"]}" tiene coordenadas inválidas: Lat ${cliente["Latitud"]}, Lon ${cliente["Longitud"]}. Ignorando.`);
                     return;
@@ -258,26 +378,21 @@
                 marcadores.push(marcador);
             });
 
-            // Ajusta la vista del mapa para que todos los marcadores sean visibles
             if (marcadores.length > 0) {
                 const grupo = L.featureGroup(marcadores);
-                mapa.fitBounds(grupo.getBounds());
+                mapa.fitBounds(grupo.getBounds(), { padding: [20, 20] }); // Añadir un pequeño padding
             }
         }
 
         function buscarCliente() {
             const texto = document.getElementById("busqueda").value.toLowerCase().trim();
-            const mensaje = document.getElementById("mensaje");
 
-            // Limpiar y resetear los filtros de select al realizar una búsqueda
             document.getElementById("ruta").value = "";
             document.getElementById("semana").value = "";
             document.getElementById("dia").value = "";
-            // Recargar las opciones de semana y día al limpiar la ruta
             actualizarFiltroSemana();
 
             if (!texto) {
-                // Si la búsqueda se borra, volver al estado inicial de "seleccione ruta"
                 cargarFiltroRutaInicial();
                 return;
             }
@@ -288,14 +403,74 @@
             );
 
             if (coincidencias.length === 0) {
-                mensaje.textContent = "No se encontraron clientes con ese nombre o código.";
-                mensaje.style.color = "orange";
+                setMensaje("No se encontraron clientes con ese nombre o código.", "warning");
             } else {
-                mensaje.textContent = `Mostrando ${coincidencias.length} cliente(s) por búsqueda.`;
-                mensaje.style.color = "green";
+                setMensaje(`Mostrando ${coincidencias.length} cliente(s) por búsqueda.`, "success");
             }
             mostrarMarcadores(coincidencias);
         }
+
+        // --- Nuevas funciones para la ubicación actual ---
+        function mostrarUbicacionActual() {
+            if ("geolocation" in navigator) {
+                setMensaje("Obteniendo tu ubicación actual...", "info");
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+
+                        // Eliminar marcador anterior si existe
+                        if (ubicacionActualMarker) {
+                            mapa.removeLayer(ubicacionActualMarker);
+                        }
+
+                        // Crear un marcador para la ubicación actual (puede ser un icono personalizado)
+                        ubicacionActualMarker = L.marker([lat, lon], {
+                            icon: L.divIcon({ // Usar un icono personalizado para diferenciar
+                                className: 'ubicacion-actual-icon',
+                                html: '<div style="background-color: #28a745; width: 20px; height: 20px; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.5);"></div>',
+                                iconSize: [26, 26], // Tamaño total del icono
+                                iconAnchor: [13, 13] // Punto de anclaje central
+                            })
+                        }).addTo(mapa)
+                          .bindPopup("¡Estás aquí!").openPopup();
+
+                        mapa.setView([lat, lon], 15); // Centra y hace zoom en la ubicación actual
+
+                        // Resetear filtros y mostrar solo la ubicación actual, o agregar a clientes si hay filtros
+                        document.getElementById("ruta").value = "";
+                        document.getElementById("semana").value = "";
+                        document.getElementById("dia").value = "";
+                        actualizarFiltroSemana(); // Repuebla los selects
+                        mostrarMarcadores([]); // Limpia los marcadores de clientes (si los había), pero mantiene el de ubicación
+                        setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
+                    },
+                    (error) => {
+                        let errorMessage = "No se pudo obtener tu ubicación.";
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "Permiso denegado para acceder a la ubicación. Asegúrate de permitirlo en la configuración de tu navegador.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "Información de ubicación no disponible.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "Tiempo de espera agotado para obtener la ubicación.";
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                errorMessage = "Error desconocido al obtener la ubicación.";
+                                break;
+                        }
+                        setMensaje(errorMessage, "error");
+                        console.error("Error al obtener ubicación:", error);
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            } else {
+                setMensaje("La geolocalización no está soportada por tu navegador.", "error");
+            }
+        }
+        // --- Fin nuevas funciones ---
 
         window.onload = cargarDatos;
     </script>
