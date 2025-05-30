@@ -123,7 +123,7 @@
             margin-top: 0;
         }
 
-        /* Media Queries para responsividad (Móviles) */
+        /* --- MEDIA QUERIES PARA RESPONSIVIDAD (MÓVILES) --- */
         @media (max-width: 768px) {
             h2 {
                 font-size: 1.5em;
@@ -133,26 +133,26 @@
                 margin: 0 10px 15px;
             }
 
-            /* --- CAMBIO CLAVE AQUÍ: Usamos Flexbox para la fila de filtros y para los botones --- */
+            /* Contenedor principal de filtros en móvil: Apila los grupos */
             .filtros {
-                display: flex; /* Volvemos a flexbox para la disposición principal */
-                flex-direction: column; /* Apilamos los grupos de elementos (filtros, búsqueda, botones) */
+                display: flex;
+                flex-direction: column; /* Apila los grupos de elementos (fila-filtros, búsqueda, botones) */
                 gap: 10px; /* Espacio entre los grupos */
-                align-items: stretch; /* Asegura que los elementos se estiren al 100% de su contenedor si se apilan */
+                align-items: stretch; /* Estira los elementos para que ocupen todo el ancho */
             }
 
-            /* Nuevo contenedor para los 3 selects de filtro */
-            .filtros .fila-filtros {
+            /* Nuevo contenedor para los 3 selects de filtro: Los pone en una sola fila */
+            .filtros .fila-filtros { /* Esta clase se añade al HTML */
                 display: flex; /* Usa flexbox para poner los selects en una fila */
                 gap: 5px; /* Reducir el espacio entre los selects para que quepan mejor */
-                flex-wrap: nowrap; /* IMPORANTE: Evita que los selects se envuelvan a la siguiente línea */
+                flex-wrap: nowrap; /* IMPORTANTE: Evita que los selects se envuelvan a la siguiente línea */
                 justify-content: space-between; /* Distribuye el espacio entre los selects */
             }
 
             /* Ajuste de los selects dentro de la fila-filtros */
             .filtros .fila-filtros select {
                 flex: 1; /* Permite que cada select crezca y ocupe el espacio disponible */
-                min-width: 0; /* Permite que se contraigan más allá de su tamaño de contenido si es necesario */
+                min-width: 0; /* Permite que se contraigan más allá de su tamaño de contenido */
                 padding: 8px; /* Reducir el padding */
                 font-size: 0.8em; /* Reducir aún más el tamaño de fuente para que quepan */
             }
@@ -182,8 +182,8 @@
                 height: calc(100vh - 270px); /* Ajuste de altura para móviles */
             }
 
-            /* En un tamaño un poco más pequeño, ajustar aún más */
-            @media (max-width: 420px) { /* Considera un breakpoint más ajustado para pantallas muy pequeñas */
+            /* En un tamaño un poco más pequeño (celulares muy estrechos), ajustar aún más */
+            @media (max-width: 420px) {
                 .filtros .fila-filtros select,
                 .filtros button {
                     font-size: 0.75em; /* Reducir la fuente un poco más */
@@ -240,7 +240,7 @@
 
             try {
                 // Asegúrate de que esta URL sea la correcta de tu Google Apps Script
-                const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todvvhK_rWH2JcH/exec"); // URL actualizada (por si acaso, verifica si esta es la última que tienes)
+                const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todmvhK_rWH2JcH/exec");
                 if (!respuesta.ok) throw new Error("No se pudo conectar al servidor.");
 
                 const datos = await respuesta.json();
@@ -487,7 +487,8 @@
 
                         mapa.setView([lat, lon], 15);
 
-                        aplicarFiltros();
+                        // Mantener los filtros y marcadores de clientes existentes
+                        aplicarFiltros(); // Este fue el cambio para mantener los filtros y marcadores
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
