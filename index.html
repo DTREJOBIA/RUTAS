@@ -133,38 +133,40 @@
                 margin: 0 10px 15px;
             }
 
-            /* --- CAMBIO CLAVE AQUÍ: Usamos Grid para dos columnas --- */
+            /* --- CAMBIO CLAVE AQUÍ: Ajuste para filtros en 2 columnas y botones en una fila --- */
             .filtros {
-                display: grid; /* Cambiamos a Grid */
-                grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
-                gap: 10px; /* Espacio entre las celdas de la cuadrícula */
-                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
+                display: grid;
+                grid-template-columns: 1fr 1fr; /* Dos columnas para los selects */
+                gap: 10px;
+                align-items: stretch;
+            }
+
+            /* Ajuste para que la barra de búsqueda ocupe dos columnas */
+            #busqueda {
+                grid-column: span 2;
+            }
+
+            /* Los botones de acción en una sola fila (flexbox dentro de la grid) */
+            .filtros .acciones-botones {
+                grid-column: span 2; /* Ocupa las dos columnas */
+                display: flex; /* Hacemos que los botones dentro de este div sean flex */
+                gap: 10px; /* Espacio entre los botones */
+                justify-content: center; /* Centrar los botones */
+                flex-wrap: wrap; /* Permitir que los botones se envuelvan si el espacio es muy pequeño */
             }
 
             .filtros select,
-            .filtros input[type="text"],
-            .filtros button {
-                width: auto; /* Grid gestionará el ancho, no necesitamos 100% explícito */
+            .filtros input[type="text"] {
+                width: auto;
                 min-width: unset;
             }
-
-            /* Ajuste para que la barra de búsqueda ocupe dos columnas si se desea */
-            /* Si prefieres que "Buscar" y "Mi Ubicación" sigan cada uno en una columna,
-               puedes omitir las siguientes dos reglas: */
-            #busqueda {
-                grid-column: span 2; /* Hace que la barra de búsqueda ocupe las dos columnas */
+            .filtros button {
+                flex: 1; /* Permite que los botones crezcan y se adapten */
+                min-width: 120px; /* Ancho mínimo para cada botón */
             }
-            /* Opcional: Si quieres que los botones también ocupen una fila completa si es necesario
-               o si quieres que cada uno vaya en una columna individual:
-               #botonBuscar, #ubicacionActualBtn { grid-column: auto; }
-               Para que "Buscar" y "Mi Ubicación" sigan en dos columnas separadas, no pongas el span 2.
-               Si el buscar debe ir solo:
-               #busqueda { grid-column: 1 / -1; }
-            */
-
 
             #map {
-                height: calc(100vh - 250px); /* Ajuste de altura para móviles, considera más espacio para filtros */
+                height: calc(100vh - 270px); /* Ajuste de altura para móviles, considera más espacio para filtros y botones */
             }
         }
     </style>
@@ -178,8 +180,10 @@
         <select id="semana"><option value="">Semana</option></select>
         <select id="dia"><option value="">Día de Visita</option></select>
         <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
-        <button id="botonBuscar">Buscar</button>
-        <button id="ubicacionActualBtn">Mi Ubicación</button>
+        <div class="acciones-botones">
+            <button id="botonBuscar">Buscar</button>
+            <button id="ubicacionActualBtn">Mi Ubicación</button>
+        </div>
     </div>
 
     <div id="map"></div>
@@ -450,11 +454,16 @@
 
                         mapa.setView([lat, lon], 15);
 
-                        document.getElementById("ruta").value = "";
-                        document.getElementById("semana").value = "";
-                        document.getElementById("dia").value = "";
-                        actualizarFiltroSemana();
-                        mostrarMarcadores([]);
+                        // --- CAMBIO CLAVE AQUÍ: No limpiar filtros ---
+                        // Ya no se ejecutan las siguientes líneas:
+                        // document.getElementById("ruta").value = "";
+                        // document.getElementById("semana").value = "";
+                        // document.getElementById("dia").value = "";
+                        // actualizarFiltroSemana();
+                        // mostrarMarcadores([]);
+
+                        // Simplemente se re-aplican los filtros existentes para mantener los marcadores de clientes
+                        aplicarFiltros(); // Esto mantendrá los clientes filtrados y añadirá la ubicación actual
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
