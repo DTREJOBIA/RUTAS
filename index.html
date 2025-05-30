@@ -42,7 +42,7 @@
     async function cargarDatos() {
       const mensaje = document.getElementById("mensaje");
       try {
-        const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwk-Ixt2cYiHtazonaP00FRZQy2_xI1gwtryR7e-d9R4n0ErtbkHz8d3TQMjAlrhYfJ/exec"); // Reemplaza con tu URL real
+        const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwk-Ixt2cYiHtazonaP00FRZQy2_xI1gwtryR7e-d9R4n0ErtbkHz8d3TQMjAlrhYfJ/exec");
         if (!respuesta.ok) throw new Error("No se pudo conectar al servidor");
 
         const datos = await respuesta.json();
@@ -66,8 +66,8 @@
         mensaje.textContent = "Datos cargados correctamente.";
         mensaje.style.color = "green";
 
-        inicializarFiltros();
         inicializarMapa();
+        inicializarFiltros();
         mostrarMarcadores(clientes);
       } catch (error) {
         mensaje.textContent = "Error al cargar datos: " + error.message;
@@ -76,36 +76,64 @@
     }
 
     function inicializarMapa() {
-      mapa = L.map("map").setView([14.6349, -90.5069], 7); // Guatemala centrado por ejemplo
+      mapa = L.map("map").setView([14.6349, -90.5069], 7);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap contributors"
       }).addTo(mapa);
     }
 
     function inicializarFiltros() {
-      const campos = {
-        "Canal": "canal",
-        "Ruta": "ruta",
-        "Supervisor": "supervisor",
-        "Región": "region",
-        "Sucursal": "sucursal",
-        "Departamento": "departamento",
-        "Municipio": "municipio",
-        "Día de Visita": "dia",
-        "Semana": "semana"
+      const filtros = ["region", "sucursal", "supervisor", "ruta", "canal", "departamento", "municipio", "dia", "semana"];
+
+      filtros.forEach(id => {
+        const select = document.getElementById(id);
+        select.addEventListener("change", () => {
+          if (["region", "sucursal", "supervisor"].includes(id)) {
+            actualizarOpcionesDependientes();
+          }
+          aplicarFiltros();
+        });
+      });
+
+      actualizarOpcionesDependientes();
+    }
+
+    function actualizarOpcionesDependientes() {
+      const region = document.getElementById("region").value;
+      const sucursal = document.getElementById("sucursal").value;
+      const supervisor = document.getElementById("supervisor").value;
+
+      const filtrar = cliente => {
+        return (!region || cliente["Región"] === region) &&
+               (!sucursal || cliente["Sucursal"] === sucursal) &&
+               (!supervisor || cliente["Supervisor"] === supervisor);
       };
 
-      for (let [campo, id] of Object.entries(campos)) {
+      const opciones = campo => {
+        return [...new Set(clientes.filter(filtrar).map(c => c[campo]).filter(Boolean))].sort();
+      };
+
+      const actualizarSelect = (id, valores) => {
         const select = document.getElementById(id);
-        const valoresUnicos = [...new Set(clientes.map(c => c[campo]).filter(v => v))].sort();
-        for (let valor of valoresUnicos) {
-          const opcion = document.createElement("option");
-          opcion.value = valor;
-          opcion.textContent = valor;
-          select.appendChild(opcion);
-        }
-        select.addEventListener("change", aplicarFiltros);
-      }
+        const seleccionado = select.value;
+        select.innerHTML = `<option value="">${select.options[0].text}</option>`;
+        valores.forEach(valor => {
+          const option = document.createElement("option");
+          option.value = valor;
+          option.textContent = valor;
+          if (valor === seleccionado) option.selected = true;
+          select.appendChild(option);
+        });
+      };
+
+      actualizarSelect("sucursal", opciones("Sucursal"));
+      actualizarSelect("supervisor", opciones("Supervisor"));
+      actualizarSelect("ruta", opciones("Ruta"));
+      actualizarSelect("canal", opciones("Canal"));
+      actualizarSelect("departamento", opciones("Departamento"));
+      actualizarSelect("municipio", opciones("Municipio"));
+      actualizarSelect("dia", opciones("Día de Visita"));
+      actualizarSelect("semana", opciones("Semana"));
     }
 
     function aplicarFiltros() {
