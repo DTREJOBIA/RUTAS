@@ -56,11 +56,11 @@
             color: #ffc107;
         }
 
-        /* Contenedor de filtros y botones */
+        /* Contenedor de filtros y botones (Desktop/General) */
         .filtros {
             padding: 15px;
             background: #ffffff;
-            display: flex;
+            display: flex; /* Usamos flexbox para el diseño de escritorio */
             flex-wrap: wrap;
             gap: 12px;
             align-items: center;
@@ -69,19 +69,19 @@
             margin: 0 15px 20px; /* Margen a los lados para que no choque con los bordes de la pantalla */
         }
 
-        /* Estilos de los selectores e input */
+        /* Estilos de los selectores e input (Desktop/General) */
         .filtros select,
         .filtros input[type="text"] {
-            flex: 1;
+            flex: 1; /* Permite que los elementos crezcan */
             padding: 10px;
             font-size: 1em;
             border: 1px solid #ccc;
             border-radius: 5px;
-            min-width: 150px;
-            box-sizing: border-box;
+            min-width: 150px; /* Ancho mínimo para elementos */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho */
         }
 
-        /* Estilos de los botones */
+        /* Estilos de los botones (Desktop/General) */
         .filtros button {
             padding: 10px 15px;
             font-size: 1em;
@@ -89,7 +89,7 @@
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            white-space: nowrap;
+            white-space: nowrap; /* Evita que el texto del botón se rompa */
         }
 
         /* Estilo para el botón de búsqueda */
@@ -116,35 +116,55 @@
 
         /* Estilos del mapa */
         #map {
-            /* Eliminamos el contenedor y ajustamos el mapa directamente */
-            height: calc(100vh - 200px); /* Ocupa el 100% del alto de la ventana menos el espacio del título y filtros */
-            width: 100%; /* Ocupa el 100% del ancho de la ventana */
-            border-radius: 0; /* Elimina el border-radius para que sea de borde a borde */
-            box-shadow: none; /* Elimina la sombra para que se integre mejor */
-            margin-top: 0; /* Asegura que no haya margen superior */
+            height: calc(100vh - 200px);
+            width: 100%;
+            border-radius: 0;
+            box-shadow: none;
+            margin-top: 0;
         }
 
-        /* Media Queries para responsividad */
+        /* Media Queries para responsividad (Móviles) */
         @media (max-width: 768px) {
             h2 {
                 font-size: 1.5em;
                 margin: 15px 0;
             }
             #mensaje, .filtros {
-                margin: 0 10px 15px; /* Ajuste el margen a los lados para pantallas pequeñas */
+                margin: 0 10px 15px;
             }
+
+            /* --- CAMBIO CLAVE AQUÍ: Usamos Grid para dos columnas --- */
             .filtros {
-                flex-direction: column;
-                align-items: stretch;
+                display: grid; /* Cambiamos a Grid */
+                grid-template-columns: 1fr 1fr; /* Dos columnas de igual tamaño */
+                gap: 10px; /* Espacio entre las celdas de la cuadrícula */
+                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
             }
+
             .filtros select,
             .filtros input[type="text"],
             .filtros button {
-                width: 100%;
+                width: auto; /* Grid gestionará el ancho, no necesitamos 100% explícito */
                 min-width: unset;
             }
+
+            /* Ajuste para que la barra de búsqueda ocupe dos columnas si se desea */
+            /* Si prefieres que "Buscar" y "Mi Ubicación" sigan cada uno en una columna,
+               puedes omitir las siguientes dos reglas: */
+            #busqueda {
+                grid-column: span 2; /* Hace que la barra de búsqueda ocupe las dos columnas */
+            }
+            /* Opcional: Si quieres que los botones también ocupen una fila completa si es necesario
+               o si quieres que cada uno vaya en una columna individual:
+               #botonBuscar, #ubicacionActualBtn { grid-column: auto; }
+               Para que "Buscar" y "Mi Ubicación" sigan en dos columnas separadas, no pongas el span 2.
+               Si el buscar debe ir solo:
+               #busqueda { grid-column: 1 / -1; }
+            */
+
+
             #map {
-                height: calc(100vh - 180px); /* Ajuste de altura para móviles */
+                height: calc(100vh - 250px); /* Ajuste de altura para móviles, considera más espacio para filtros */
             }
         }
     </style>
@@ -182,6 +202,7 @@
             setMensaje("Cargando datos...", "info");
 
             try {
+                // Asegúrate de que esta URL sea la correcta de tu Google Apps Script
                 const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todmvhK_rWH2JcH/exec");
                 if (!respuesta.ok) throw new Error("No se pudo conectar al servidor.");
 
@@ -338,7 +359,7 @@
                         mapa.setView([14.6349, -90.5069], 7);
                     }
                 } else {
-                    mapa.setView(ubicacionActualMarker.getLatLng(), 15); // Zoom un poco más cercano para solo ubicación
+                    mapa.setView(ubicacionActualMarker.getLatLng(), 15);
                 }
                 return;
             }
@@ -433,7 +454,7 @@
                         document.getElementById("semana").value = "";
                         document.getElementById("dia").value = "";
                         actualizarFiltroSemana();
-                        mostrarMarcadores([]); // Limpia marcadores de clientes, manteniendo solo la ubicación actual
+                        mostrarMarcadores([]);
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
