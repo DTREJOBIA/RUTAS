@@ -133,35 +133,44 @@
                 margin: 0 10px 15px;
             }
 
-            /* --- CAMBIO CLAVE AQUÍ: Usamos Grid para 3 columnas para los selects/input --- */
+            /* --- CAMBIO CLAVE AQUÍ: Usamos Flexbox para la fila de filtros y para los botones --- */
             .filtros {
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr; /* Tres columnas de igual tamaño */
-                gap: 10px; /* Espacio entre las celdas de la cuadrícula */
-                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
+                display: flex; /* Volvemos a flexbox para la disposición principal */
+                flex-direction: column; /* Apilamos los grupos de elementos (filtros, búsqueda, botones) */
+                gap: 10px; /* Espacio entre los grupos */
+                align-items: stretch; /* Asegura que los elementos se estiren al 100% de su contenedor si se apilan */
             }
 
-            /* Ajuste para que la barra de búsqueda ocupe las tres columnas */
+            /* Nuevo contenedor para los 3 selects de filtro */
+            .filtros .fila-filtros {
+                display: flex; /* Usa flexbox para poner los selects en una fila */
+                gap: 5px; /* Reducir el espacio entre los selects para que quepan mejor */
+                flex-wrap: nowrap; /* IMPORANTE: Evita que los selects se envuelvan a la siguiente línea */
+                justify-content: space-between; /* Distribuye el espacio entre los selects */
+            }
+
+            /* Ajuste de los selects dentro de la fila-filtros */
+            .filtros .fila-filtros select {
+                flex: 1; /* Permite que cada select crezca y ocupe el espacio disponible */
+                min-width: 0; /* Permite que se contraigan más allá de su tamaño de contenido si es necesario */
+                padding: 8px; /* Reducir el padding */
+                font-size: 0.8em; /* Reducir aún más el tamaño de fuente para que quepan */
+            }
+
+            /* La barra de búsqueda se muestra en su propia fila, estirándose */
             #busqueda {
-                grid-column: span 3;
+                width: 100%; /* Asegura que la barra de búsqueda ocupe todo el ancho disponible */
+                box-sizing: border-box; /* Incluye padding y borde en el ancho */
             }
 
-            /* Los botones de acción en una sola fila (flexbox dentro de la grid) */
+            /* Los botones de acción en su propia fila (flexbox) */
             .filtros .acciones-botones {
-                grid-column: span 3; /* Ocupa las tres columnas */
                 display: flex; /* Hacemos que los botones dentro de este div sean flex */
-                gap: 10px; /* Espacio entre los botones */
+                gap: 8px; /* Espacio entre los botones */
                 justify-content: center; /* Centrar los botones */
                 flex-wrap: wrap; /* Permitir que los botones se envuelvan si el espacio es muy pequeño */
             }
 
-            .filtros select,
-            .filtros input[type="text"] {
-                width: auto; /* Grid gestionará el ancho, no necesitamos 100% explícito */
-                min-width: unset;
-                font-size: 0.9em; /* Reducir un poco el tamaño de fuente para que quepan */
-                padding: 8px; /* Reducir un poco el padding */
-            }
             .filtros button {
                 flex: 1; /* Permite que los botones crezcan y se adapten */
                 min-width: 100px; /* Ancho mínimo para cada botón */
@@ -170,27 +179,25 @@
             }
 
             #map {
-                height: calc(100vh - 270px); /* Ajuste de altura para móviles, considera más espacio para filtros y botones */
+                height: calc(100vh - 270px); /* Ajuste de altura para móviles */
             }
-        }
 
-        /* En un tamaño un poco más pequeño, los selects podrían romperse.
-           Si la pantalla es demasiado estrecha para 3 columnas, volver a 2.
-           Ajusta este breakpoint si es necesario.
-        */
-        @media (max-width: 480px) {
-            .filtros {
-                grid-template-columns: 1fr 1fr; /* Volver a dos columnas si la pantalla es muy pequeña */
-            }
-            #busqueda, .filtros .acciones-botones {
-                grid-column: span 2; /* Ocupar dos columnas */
-            }
-            .filtros select, .filtros input[type="text"], .filtros button {
-                font-size: 0.85em; /* Reducir aún más la fuente */
-                padding: 6px; /* Reducir el padding */
-            }
-            #map {
-                height: calc(100vh - 280px); /* Ajuste de altura si los controles ocupan más espacio */
+            /* En un tamaño un poco más pequeño, ajustar aún más */
+            @media (max-width: 420px) { /* Considera un breakpoint más ajustado para pantallas muy pequeñas */
+                .filtros .fila-filtros select,
+                .filtros button {
+                    font-size: 0.75em; /* Reducir la fuente un poco más */
+                    padding: 6px; /* Reducir el padding un poco más */
+                }
+                .filtros .fila-filtros {
+                    gap: 3px; /* Reducir el espacio entre selects */
+                }
+                .filtros .acciones-botones {
+                    gap: 6px; /* Reducir el espacio entre botones */
+                }
+                #map {
+                    height: calc(100vh - 285px); /* Ajuste de altura si los controles ocupan más espacio */
+                }
             }
         }
     </style>
@@ -200,9 +207,11 @@
     <div id="mensaje">Cargando datos...</div>
 
     <div class="filtros">
-        <select id="ruta"><option value="">Ruta</option></select>
-        <select id="semana"><option value="">Semana</option></select>
-        <select id="dia"><option value="">Día de Visita</option></select>
+        <div class="fila-filtros">
+            <select id="ruta"><option value="">Ruta</option></select>
+            <select id="semana"><option value="">Semana</option></select>
+            <select id="dia"><option value="">Día de Visita</option></select>
+        </div>
         <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
         <div class="acciones-botones">
             <button id="botonBuscar">Buscar</button>
@@ -231,7 +240,7 @@
 
             try {
                 // Asegúrate de que esta URL sea la correcta de tu Google Apps Script
-                const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todmvhK_rWH2JcH/exec");
+                const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todvvhK_rWH2JcH/exec"); // URL actualizada (por si acaso, verifica si esta es la última que tienes)
                 if (!respuesta.ok) throw new Error("No se pudo conectar al servidor.");
 
                 const datos = await respuesta.json();
@@ -478,7 +487,6 @@
 
                         mapa.setView([lat, lon], 15);
 
-                        // Mantener los filtros y marcadores de clientes existentes
                         aplicarFiltros();
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
