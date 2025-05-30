@@ -133,22 +133,22 @@
                 margin: 0 10px 15px;
             }
 
-            /* --- CAMBIO CLAVE AQUÍ: Ajuste para filtros en 2 columnas y botones en una fila --- */
+            /* --- CAMBIO CLAVE AQUÍ: Usamos Grid para 3 columnas para los selects/input --- */
             .filtros {
                 display: grid;
-                grid-template-columns: 1fr 1fr; /* Dos columnas para los selects */
-                gap: 10px;
-                align-items: stretch;
+                grid-template-columns: 1fr 1fr 1fr; /* Tres columnas de igual tamaño */
+                gap: 10px; /* Espacio entre las celdas de la cuadrícula */
+                align-items: stretch; /* Estira los elementos para que tengan la misma altura */
             }
 
-            /* Ajuste para que la barra de búsqueda ocupe dos columnas */
+            /* Ajuste para que la barra de búsqueda ocupe las tres columnas */
             #busqueda {
-                grid-column: span 2;
+                grid-column: span 3;
             }
 
             /* Los botones de acción en una sola fila (flexbox dentro de la grid) */
             .filtros .acciones-botones {
-                grid-column: span 2; /* Ocupa las dos columnas */
+                grid-column: span 3; /* Ocupa las tres columnas */
                 display: flex; /* Hacemos que los botones dentro de este div sean flex */
                 gap: 10px; /* Espacio entre los botones */
                 justify-content: center; /* Centrar los botones */
@@ -157,16 +157,40 @@
 
             .filtros select,
             .filtros input[type="text"] {
-                width: auto;
+                width: auto; /* Grid gestionará el ancho, no necesitamos 100% explícito */
                 min-width: unset;
+                font-size: 0.9em; /* Reducir un poco el tamaño de fuente para que quepan */
+                padding: 8px; /* Reducir un poco el padding */
             }
             .filtros button {
                 flex: 1; /* Permite que los botones crezcan y se adapten */
-                min-width: 120px; /* Ancho mínimo para cada botón */
+                min-width: 100px; /* Ancho mínimo para cada botón */
+                padding: 8px 12px; /* Reducir padding de botones */
+                font-size: 0.9em; /* Reducir fuente de botones */
             }
 
             #map {
                 height: calc(100vh - 270px); /* Ajuste de altura para móviles, considera más espacio para filtros y botones */
+            }
+        }
+
+        /* En un tamaño un poco más pequeño, los selects podrían romperse.
+           Si la pantalla es demasiado estrecha para 3 columnas, volver a 2.
+           Ajusta este breakpoint si es necesario.
+        */
+        @media (max-width: 480px) {
+            .filtros {
+                grid-template-columns: 1fr 1fr; /* Volver a dos columnas si la pantalla es muy pequeña */
+            }
+            #busqueda, .filtros .acciones-botones {
+                grid-column: span 2; /* Ocupar dos columnas */
+            }
+            .filtros select, .filtros input[type="text"], .filtros button {
+                font-size: 0.85em; /* Reducir aún más la fuente */
+                padding: 6px; /* Reducir el padding */
+            }
+            #map {
+                height: calc(100vh - 280px); /* Ajuste de altura si los controles ocupan más espacio */
             }
         }
     </style>
@@ -454,16 +478,8 @@
 
                         mapa.setView([lat, lon], 15);
 
-                        // --- CAMBIO CLAVE AQUÍ: No limpiar filtros ---
-                        // Ya no se ejecutan las siguientes líneas:
-                        // document.getElementById("ruta").value = "";
-                        // document.getElementById("semana").value = "";
-                        // document.getElementById("dia").value = "";
-                        // actualizarFiltroSemana();
-                        // mostrarMarcadores([]);
-
-                        // Simplemente se re-aplican los filtros existentes para mantener los marcadores de clientes
-                        aplicarFiltros(); // Esto mantendrá los clientes filtrados y añadirá la ubicación actual
+                        // Mantener los filtros y marcadores de clientes existentes
+                        aplicarFiltros();
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
