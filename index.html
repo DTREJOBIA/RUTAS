@@ -17,18 +17,11 @@
   <div id="mensaje">Cargando datos...</div>
 
   <div class="filtros">
-    <select id="canal"><option value="">Canal</option></select>
     <select id="ruta"><option value="">Ruta</option></select>
-    <select id="supervisor"><option value="">Supervisor</option></select>
-    <select id="region"><option value="">Región</option></select>
-    <select id="sucursal"><option value="">Sucursal</option></select>
-    <select id="departamento"><option value="">Departamento</option></select>
-    <select id="municipio"><option value="">Municipio</option></select>
-    <select id="dia"><option value="">Día de Visita</option></select>
     <select id="semana"><option value="">Semana</option></select>
+    <select id="dia"><option value="">Día de Visita</option></select>
 
-    <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
-    <button onclick="buscarCliente()">Buscar</button>
+    <input type="text" id="busqueda" placeholder="Buscar por nombre o código" oninput="buscarCliente()" />
   </div>
 
   <div id="map"></div>
@@ -68,8 +61,6 @@
 
         inicializarMapa();
         inicializarFiltros();
-        // No mostrar todos los marcadores al inicio para evitar sobrecarga
-        // mostrarMarcadores(clientes);
       } catch (error) {
         mensaje.textContent = "Error al cargar datos: " + error.message;
         mensaje.style.color = "red";
@@ -84,76 +75,52 @@
     }
 
     function inicializarFiltros() {
-      const filtros = ["region", "sucursal", "supervisor", "ruta", "canal", "departamento", "municipio", "dia", "semana"];
-
-      filtros.forEach(id => {
-        const select = document.getElementById(id);
-        select.addEventListener("change", () => {
-          if (["region", "sucursal", "supervisor"].includes(id)) {
-            actualizarOpcionesDependientes();
-          }
-          aplicarFiltros();
-        });
-      });
-
-      actualizarOpcionesDependientes();
+      document.getElementById("ruta").addEventListener("change", actualizarSemanaYDia);
+      document.getElementById("semana").addEventListener("change", aplicarFiltros);
+      document.getElementById("dia").addEventListener("change", aplicarFiltros);
+      actualizarRuta();
     }
 
-    function actualizarOpcionesDependientes() {
-      const region = document.getElementById("region").value;
-      const sucursal = document.getElementById("sucursal").value;
-      const supervisor = document.getElementById("supervisor").value;
+    function actualizarRuta() {
+      const rutas = [...new Set(clientes.map(c => c["Ruta"]).filter(Boolean))].sort();
+      actualizarSelect("ruta", rutas);
+    }
 
-      const filtrar = cliente => {
-        return (!region || cliente["Región"] === region) &&
-               (!sucursal || cliente["Sucursal"] === sucursal) &&
-               (!supervisor || cliente["Supervisor"] === supervisor);
-      };
+    function actualizarSemanaYDia() {
+      const rutaSeleccionada = document.getElementById("ruta").value;
+      const filtrados = clientes.filter(c => !rutaSeleccionada || c["Ruta"] === rutaSeleccionada);
 
-      const opciones = campo => {
-        return [...new Set(clientes.filter(filtrar).map(c => c[campo]).filter(Boolean))].sort();
-      };
+      const semanas = [...new Set(filtrados.map(c => c["Semana"]).filter(Boolean))].sort();
+      const dias = [...new Set(filtrados.map(c => c["Día de Visita"]).filter(Boolean))].sort();
 
-      const actualizarSelect = (id, valores) => {
-        const select = document.getElementById(id);
-        const seleccionado = select.value;
-        select.innerHTML = `<option value="">${select.options[0].text}</option>`;
-        valores.forEach(valor => {
-          const option = document.createElement("option");
-          option.value = valor;
-          option.textContent = valor;
-          if (valor === seleccionado) option.selected = true;
-          select.appendChild(option);
-        });
-      };
+      actualizarSelect("semana", semanas);
+      actualizarSelect("dia", dias);
 
-      actualizarSelect("sucursal", opciones("Sucursal"));
-      actualizarSelect("supervisor", opciones("Supervisor"));
-      actualizarSelect("ruta", opciones("Ruta"));
-      actualizarSelect("canal", opciones("Canal"));
-      actualizarSelect("departamento", opciones("Departamento"));
-      actualizarSelect("municipio", opciones("Municipio"));
-      actualizarSelect("dia", opciones("Día de Visita"));
-      actualizarSelect("semana", opciones("Semana"));
+      aplicarFiltros();
+    }
+
+    function actualizarSelect(id, valores) {
+      const select = document.getElementById(id);
+      const seleccionado = select.value;
+      select.innerHTML = `<option value="">${select.options[0].text}</option>`;
+      valores.forEach(valor => {
+        const option = document.createElement("option");
+        option.value = valor;
+        option.textContent = valor;
+        if (valor === seleccionado) option.selected = true;
+        select.appendChild(option);
+      });
     }
 
     function aplicarFiltros() {
-      const filtros = {
-        "Canal": document.getElementById("canal").value,
-        "Ruta": document.getElementById("ruta").value,
-        "Supervisor": document.getElementById("supervisor").value,
-        "Región": document.getElementById("region").value,
-        "Sucursal": document.getElementById("sucursal").value,
-        "Departamento": document.getElementById("departamento").value,
-        "Municipio": document.getElementById("municipio").value,
-        "Día de Visita": document.getElementById("dia").value,
-        "Semana": document.getElementById("semana").value
-      };
+      const ruta = document.getElementById("ruta").value;
+      const semana = document.getElementById("semana").value;
+      const dia = document.getElementById("dia").value;
 
-      const filtrados = clientes.filter(cliente => {
-        return Object.entries(filtros).every(([clave, valor]) => {
-          return valor === "" || cliente[clave] === valor;
-        });
+      const filtrados = clientes.filter(c => {
+        return (!ruta || c["Ruta"] === ruta) &&
+               (!semana || c["Semana"] === semana) &&
+               (!dia || c["Día de Visita"] === dia);
       });
 
       mostrarMarcadores(filtrados);
@@ -186,26 +153,16 @@
       const texto = document.getElementById("busqueda").value.toLowerCase();
       if (!texto) return;
 
-      const cliente = clientes.find(c =>
+      const coincidencias = clientes.filter(c =>
         (c["Nombre"] && c["Nombre"].toLowerCase().includes(texto)) ||
         (c["Código"] && c["Código"].toString().toLowerCase().includes(texto))
       );
 
-      if (cliente && cliente["Latitud"] && cliente["Longitud"]) {
-        const lat = parseFloat(cliente["Latitud"]);
-        const lon = parseFloat(cliente["Longitud"]);
-        mapa.setView([lat, lon], 16);
-
-        const info = Object.entries(cliente)
-          .map(([k, v]) => `<b>${k}</b>: ${v}`)
-          .join("<br>");
-        L.popup().setLatLng([lat, lon]).setContent(info).openOn(mapa);
-      } else {
-        alert("Cliente no encontrado.");
-      }
+      mostrarMarcadores(coincidencias);
     }
 
     window.onload = cargarDatos;
   </script>
 </body>
 </html>
+
