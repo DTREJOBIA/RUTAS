@@ -125,78 +125,89 @@
 
         /* --- MEDIA QUERIES PARA RESPONSIVIDAD (MÓVILES) --- */
         @media (max-width: 768px) {
+            /* AJUSTES PARA EL TÍTULO */
             h2 {
-                font-size: 1.5em;
-                margin: 15px 0;
-            }
-            #mensaje, .filtros {
-                margin: 0 10px 15px;
+                font-size: 1.4em; /* Disminuye el tamaño de la fuente del título */
+                padding-bottom: 8px; /* Reduce el padding inferior para disminuir el "grosor" de la fila */
+                margin-top: 15px; /* Ajusta el margen superior un poco */
+                margin-bottom: 15px; /* Ajusta el margen inferior un poco */
             }
 
-            /* Contenedor principal de filtros en móvil: Apila los grupos */
+            /* AJUSTES PARA EL CUADRO DE MENSAJES */
+            #mensaje {
+                padding: 8px; /* Reduce el padding para hacerlo un poco más pequeño */
+                margin-bottom: 12px; /* Reduce el margen inferior un poco */
+                font-size: 0.9em; /* Opcional: reducir un poco la fuente del mensaje si se ve muy grande */
+            }
+
             .filtros {
+                margin: 0 10px 15px;
                 display: flex;
-                flex-direction: column; /* Apila los grupos de elementos (fila-filtros, búsqueda, botones) */
-                gap: 10px; /* Espacio entre los grupos */
-                align-items: stretch; /* Estira los elementos para que ocupen todo el ancho */
+                flex-direction: column;
+                gap: 10px;
+                align-items: stretch;
             }
 
-            /* Nuevo contenedor para los 3 selects de filtro: Los pone en una sola fila */
-            .filtros .fila-filtros { /* Esta clase se añade al HTML */
-                display: flex; /* Usa flexbox para poner los selects en una fila */
-                gap: 5px; /* Reducir el espacio entre los selects para que quepan mejor */
-                flex-wrap: nowrap; /* IMPORTANTE: Evita que los selects se envuelvan a la siguiente línea */
-                justify-content: space-between; /* Distribuye el espacio entre los selects */
+            .filtros .fila-filtros {
+                display: flex;
+                gap: 5px;
+                flex-wrap: nowrap;
+                justify-content: space-between;
             }
 
-            /* Ajuste de los selects dentro de la fila-filtros */
             .filtros .fila-filtros select {
-                flex: 1; /* Permite que cada select crezca y ocupe el espacio disponible */
-                min-width: 0; /* Permite que se contraigan más allá de su tamaño de contenido */
-                padding: 8px; /* Reducir el padding */
-                font-size: 0.8em; /* Reducir aún más el tamaño de fuente para que quepan */
+                flex: 1;
+                min-width: 0;
+                padding: 8px;
+                font-size: 0.8em;
             }
 
-            /* La barra de búsqueda se muestra en su propia fila, estirándose */
             #busqueda {
-                width: 100%; /* Asegura que la barra de búsqueda ocupe todo el ancho disponible */
-                box-sizing: border-box; /* Incluye padding y borde en el ancho */
+                width: 100%;
+                box-sizing: border-box;
             }
 
-            /* Los botones de acción en su propia fila (flexbox) */
             .filtros .acciones-botones {
-                display: flex; /* Hacemos que los botones dentro de este div sean flex */
-                gap: 8px; /* Espacio entre los botones */
-                justify-content: center; /* Centrar los botones */
-                flex-wrap: wrap; /* Permitir que los botones se envuelvan si el espacio es muy pequeño */
+                display: flex;
+                gap: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
             }
 
             .filtros button {
-                flex: 1; /* Permite que los botones crezcan y se adapten */
-                min-width: 100px; /* Ancho mínimo para cada botón */
-                padding: 8px 12px; /* Reducir padding de botones */
-                font-size: 0.9em; /* Reducir fuente de botones */
+                flex: 1;
+                min-width: 100px;
+                padding: 8px 12px;
+                font-size: 0.9em;
             }
 
             #map {
-                height: calc(100vh - 270px); /* Ajuste de altura para móviles */
+                height: calc(100vh - 270px);
             }
 
             /* En un tamaño un poco más pequeño (celulares muy estrechos), ajustar aún más */
             @media (max-width: 420px) {
+                h2 {
+                    font-size: 1.3em; /* Ajuste adicional para pantallas muy pequeñas */
+                    padding-bottom: 6px;
+                }
+                #mensaje {
+                    padding: 6px;
+                    font-size: 0.85em;
+                }
                 .filtros .fila-filtros select,
                 .filtros button {
-                    font-size: 0.75em; /* Reducir la fuente un poco más */
-                    padding: 6px; /* Reducir el padding un poco más */
+                    font-size: 0.75em;
+                    padding: 6px;
                 }
                 .filtros .fila-filtros {
-                    gap: 3px; /* Reducir el espacio entre selects */
+                    gap: 3px;
                 }
                 .filtros .acciones-botones {
-                    gap: 6px; /* Reducir el espacio entre botones */
+                    gap: 6px;
                 }
                 #map {
-                    height: calc(100vh - 285px); /* Ajuste de altura si los controles ocupan más espacio */
+                    height: calc(100vh - 285px);
                 }
             }
         }
@@ -488,7 +499,7 @@
                         mapa.setView([lat, lon], 15);
 
                         // Mantener los filtros y marcadores de clientes existentes
-                        aplicarFiltros(); // Este fue el cambio para mantener los filtros y marcadores
+                        aplicarFiltros();
                         setMensaje("Tu ubicación actual ha sido marcada en el mapa.", "success");
                     },
                     (error) => {
