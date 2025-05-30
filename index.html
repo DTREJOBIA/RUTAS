@@ -1,182 +1,303 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Visor de Clientes</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-    #map { height: 80vh; width: 100%; }
-    .filtros { padding: 10px; background: #f0f0f0; display: flex; flex-wrap: wrap; gap: 10px; }
-    .filtros select, .filtros input { padding: 5px; font-size: 14px; }
-    #mensaje { padding: 5px; font-weight: bold; text-align: center; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Visor de Clientes</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+        #map { height: 80vh; width: 100%; }
+        .filtros { padding: 10px; background: #f0f0f0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .filtros select, .filtros input, .filtros button { padding: 5px; font-size: 14px; }
+        #mensaje { padding: 5px; font-weight: bold; text-align: center; }
+        .filtros button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .filtros button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-  <h2 style="text-align:center">Visor de Clientes en el Mapa</h2>
-  <div id="mensaje">Cargando datos...</div>
+    <h2 style="text-align:center">Visor de Clientes en el Mapa</h2>
+    <div id="mensaje">Cargando datos...</div>
 
-  <div class="filtros">
-    <select id="ruta"><option value="">Ruta</option></select>
-    <select id="semana"><option value="">Semana</option></select>
-    <select id="dia"><option value="">Día de Visita</option></select>
-    <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
-  </div>
+    <div class="filtros">
+        <select id="ruta"><option value="">Ruta</option></select>
+        <select id="semana"><option value="">Semana</option></select>
+        <select id="dia"><option value="">Día de Visita</option></select>
+        <input type="text" id="busqueda" placeholder="Buscar por nombre o código" />
+        <button id="botonBuscar">Buscar</button>
+    </div>
 
-  <div id="map"></div>
+    <div id="map"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-  <script>
-    let clientes = [];
-    let marcadores = [];
-    let mapa;
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        let clientes = [];
+        let marcadores = [];
+        let mapa;
 
-    async function cargarDatos() {
-      const mensaje = document.getElementById("mensaje");
-      try {
-        const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwk-Ixt2cYiHtazonaP00FRZQy2_xI1gwtryR7e-d9R4n0ErtbkHz8d3TQMjAlrhYfJ/exec");
-        if (!respuesta.ok) throw new Error("No se pudo conectar al servidor");
+        async function cargarDatos() {
+            const mensaje = document.getElementById("mensaje");
+            mensaje.textContent = "Cargando datos...";
+            mensaje.style.color = "blue";
 
-        const datos = await respuesta.json();
+            try {
+                // Considera usar una URL de API si tu script es privado o tiene límites de uso.
+                // Para hojas de cálculo grandes, puede ser más eficiente que Google Apps Script.
+                const respuesta = await fetch("https://script.google.com/macros/s/AKfycbwWOCQz7M7NZ8ST2XDgmBfr3gWRoG8VEr_qU70kPyVkppAUxdMb9todmvhK_rWH2JcH/exec");
+                if (!respuesta.ok) throw new Error("No se pudo conectar al servidor");
 
-        if (!Array.isArray(datos) || datos.length === 0) {
-          mensaje.textContent = "No se encontraron datos en la hoja.";
-          mensaje.style.color = "red";
-          return;
+                const datos = await respuesta.json();
+
+                if (!Array.isArray(datos) || datos.length === 0) {
+                    mensaje.textContent = "No se encontraron datos en la hoja.";
+                    mensaje.style.color = "red";
+                    return;
+                }
+
+                const obligatorios = ["Nombre", "Latitud", "Longitud", "Ruta"]; // Asegúrate de que Ruta sea obligatorio
+                for (let campo of obligatorios) {
+                    if (!(campo in datos[0])) {
+                        mensaje.textContent = "Falta el campo requerido: " + campo + ". Asegúrate de que los encabezados de tu hoja de cálculo coincidan exactamente (ej. 'Ruta').";
+                        mensaje.style.color = "red";
+                        return;
+                    }
+                }
+
+                clientes = datos;
+                mensaje.textContent = "Datos cargados correctamente. Seleccione una ruta para ver clientes.";
+                mensaje.style.color = "green";
+
+                inicializarMapa();
+                inicializarFiltros();
+            } catch (error) {
+                mensaje.textContent = "Error al cargar datos: " + error.message;
+                mensaje.style.color = "red";
+            }
         }
 
-        const obligatorios = ["Nombre", "Latitud", "Longitud"];
-        for (let campo of obligatorios) {
-          if (!(campo in datos[0])) {
-            mensaje.textContent = "Falta el campo requerido: " + campo;
-            mensaje.style.color = "red";
-            return;
-          }
+        function inicializarMapa() {
+            mapa = L.map("map").setView([14.6349, -90.5069], 7); // Coordenadas de ejemplo (Guatemala)
+            L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "© OpenStreetMap contributors"
+            }).addTo(mapa);
         }
 
-        clientes = datos;
-        mensaje.textContent = "Datos cargados. Usa los filtros o el buscador para ver los clientes.";
-        mensaje.style.color = "green";
+        function inicializarFiltros() {
+            // Evento para el filtro de Ruta
+            document.getElementById("ruta").addEventListener("change", () => {
+                // Al cambiar la ruta, limpiar Semana y Día para forzar que se repueblen
+                document.getElementById("semana").value = "";
+                document.getElementById("dia").value = "";
+                actualizarFiltroSemana(); // Esto actualizará Semana y luego Día
+                aplicarFiltros(); // Aplica los filtros incluyendo la nueva ruta
+            });
 
-        inicializarMapa();
-        inicializarFiltros();
-      } catch (error) {
-        mensaje.textContent = "Error al cargar datos: " + error.message;
-        mensaje.style.color = "red";
-      }
-    }
+            // Eventos para Semana y Día (solo aplican filtros, no repueblan otros selects)
+            document.getElementById("semana").addEventListener("change", () => {
+                actualizarFiltroDia(); // Al cambiar semana, actualiza los días disponibles
+                aplicarFiltros();
+            });
+            document.getElementById("dia").addEventListener("change", aplicarFiltros);
 
-    function inicializarMapa() {
-      mapa = L.map("map").setView([14.6349, -90.5069], 7);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: "© OpenStreetMap contributors"
-      }).addTo(mapa);
-    }
+            // Eventos para la búsqueda
+            document.getElementById("busqueda").addEventListener("input", function() {
+                // Dispara la búsqueda solo si el campo se vacía
+                if (this.value === "") {
+                    buscarCliente();
+                }
+            });
+            document.getElementById("botonBuscar").addEventListener("click", buscarCliente);
 
-    function inicializarFiltros() {
-      document.getElementById("ruta").addEventListener("change", () => {
-        actualizarSemanaYDia();
-        aplicarFiltros();
-      });
-      document.getElementById("semana").addEventListener("change", aplicarFiltros);
-      document.getElementById("dia").addEventListener("change", aplicarFiltros);
-      document.getElementById("busqueda").addEventListener("input", buscarCliente);
-      actualizarRuta();
-    }
+            cargarFiltroRutaInicial();
+        }
 
-    function actualizarRuta() {
-      const rutas = [...new Set(clientes.map(c => c["Ruta"]).filter(Boolean))].sort();
-      actualizarSelect("ruta", rutas);
-    }
+        function cargarFiltroRutaInicial() {
+            // Obtener todas las rutas únicas y ordenarlas
+            const todasRutas = [...new Set(clientes.map(c => c["Ruta"]).filter(Boolean))].sort();
+            actualizarSelect("ruta", todasRutas, "Ruta"); // Usa "Ruta" como texto del placeholder
 
-    function actualizarSemanaYDia() {
-      const rutaSeleccionada = document.getElementById("ruta").value;
-      const filtrados = clientes.filter(c => !rutaSeleccionada || c["Ruta"] === rutaSeleccionada);
+            // No mostrar nada al inicio, solo el placeholder y el mensaje
+            document.getElementById("mensaje").textContent = "Seleccione una ruta para ver clientes en el mapa.";
+            document.getElementById("mensaje").style.color = "blue";
+            mostrarMarcadores([]); // Asegúrate de que el mapa esté vacío
+            actualizarFiltroSemana(); // Esto inicializará los filtros de semana y día (vacíos)
+        }
 
-      const semanas = [...new Set(filtrados.map(c => c["Semana"]).filter(Boolean))].sort();
-      const dias = [...new Set(filtrados.map(c => c["Día de Visita"]).filter(Boolean))].sort();
+        // Modificada para depender de la ruta seleccionada
+        function actualizarFiltroSemana() {
+            const rutaSeleccionada = document.getElementById("ruta").value;
+            let semanas = [];
 
-      actualizarSelect("semana", semanas);
-      actualizarSelect("dia", dias);
-    }
+            if (rutaSeleccionada) {
+                // Filtra clientes solo por la ruta seleccionada
+                const clientesEnRuta = clientes.filter(c => c["Ruta"] === rutaSeleccionada);
+                // Obtiene semanas únicas de esos clientes
+                semanas = [...new Set(clientesEnRuta.map(c => c["Semana"]).filter(Boolean))].sort();
+            }
+            actualizarSelect("semana", semanas, "Semana"); // Pasa "Semana" como placeholder
+            actualizarFiltroDia(); // Llama para actualizar los días después de las semanas
+        }
 
-    function actualizarSelect(id, valores) {
-      const select = document.getElementById(id);
-      const seleccionado = select.value;
-      select.innerHTML = `<option value="">${select.options[0].text}</option>`;
-      valores.forEach(valor => {
-        const option = document.createElement("option");
-        option.value = valor;
-        option.textContent = valor;
-        if (valor === seleccionado) option.selected = true;
-        select.appendChild(option);
-      });
-    }
+        // Modificada para depender de la ruta y semana seleccionadas
+        function actualizarFiltroDia() {
+            const rutaSeleccionada = document.getElementById("ruta").value;
+            const semanaSeleccionada = document.getElementById("semana").value;
+            let dias = [];
 
-    function aplicarFiltros() {
-      const ruta = document.getElementById("ruta").value;
-      const semana = document.getElementById("semana").value;
-      const dia = document.getElementById("dia").value;
+            if (rutaSeleccionada) {
+                // Filtra primero por ruta
+                let clientesParaDias = clientes.filter(c => c["Ruta"] === rutaSeleccionada);
+                // Si hay semana seleccionada, filtra también por semana
+                if (semanaSeleccionada) {
+                    clientesParaDias = clientesParaDias.filter(c => c["Semana"] === semanaSeleccionada);
+                }
+                // Obtiene días únicos de los clientes filtrados
+                dias = [...new Set(clientesParaDias.map(c => c["Día de Visita"]).filter(Boolean))].sort();
+            }
+            actualizarSelect("dia", dias, "Día de Visita"); // Pasa "Día de Visita" como placeholder
+        }
 
-      const filtrados = clientes.filter(c => {
-        return (!ruta || c["Ruta"] === ruta) &&
-               (!semana || c["Semana"] === semana) &&
-               (!dia || c["Día de Visita"] === dia);
-      });
+        // Función auxiliar para actualizar los selects de forma más genérica
+        function actualizarSelect(id, valores, placeholderText) {
+            const select = document.getElementById(id);
+            const seleccionado = select.value; // Guarda el valor actualmente seleccionado
+            select.innerHTML = `<option value="">${placeholderText}</option>`; // Restablece con el placeholder
 
-      mostrarMarcadores(filtrados);
-    }
+            valores.forEach(valor => {
+                const option = document.createElement("option");
+                option.value = valor;
+                option.textContent = valor;
+                if (valor === seleccionado) { // Intenta mantener la selección si el valor sigue disponible
+                    option.selected = true;
+                }
+                select.appendChild(option);
+            });
+        }
 
-    function mostrarMarcadores(lista) {
-      marcadores.forEach(m => mapa.removeLayer(m));
-      marcadores = [];
+        function aplicarFiltros() {
+            const ruta = document.getElementById("ruta").value;
+            const semana = document.getElementById("semana").value;
+            const dia = document.getElementById("dia").value;
+            const mensaje = document.getElementById("mensaje");
 
-      lista.forEach(cliente => {
-        const lat = parseFloat(cliente["Latitud"]);
-        const lon = parseFloat(cliente["Longitud"]);
-        if (isNaN(lat) || isNaN(lon)) return;
+            // Si no hay ruta seleccionada, no mostrar nada
+            if (!ruta) {
+                mensaje.textContent = "Seleccione una ruta para ver clientes en el mapa.";
+                mensaje.style.color = "blue";
+                mostrarMarcadores([]);
+                return;
+            }
 
-        const marcador = L.marker([lat, lon]).addTo(mapa);
-        const info = `
-          <b>Código:</b> ${cliente["Código"] || ""}<br>
-          <b>Nombre:</b> ${cliente["Nombre"] || ""}<br>
-          <b>Ruta:</b> ${cliente["Ruta"] || ""}<br>
-          <b>Semana:</b> ${cliente["Semana"] || ""}<br>
-          <b>Día:</b> ${cliente["Día de Visita"] || ""}<br>
-          <b>Dirección:</b> ${cliente["Dirección"] || ""}<br>
-          <b>Teléfono:</b> ${cliente["Teléfono"] || ""}<br>
-          <b>ID:</b> ${cliente["ID"] || ""}<br>
-          <b>RTN:</b> ${cliente["RTN"] || ""}<br>
-          <b>Canal:</b> ${cliente["Canal"] || ""}<br>
-          <b>Supervisor:</b> ${cliente["Supervisor"] || ""}<br>
-          <b>Región:</b> ${cliente["Región"] || ""}<br>
-          <b>Sucursal:</b> ${cliente["Sucursal"] || ""}<br>
-          <b>Departamento:</b> ${cliente["Departamento"] || ""}<br>
-          <b>Municipio:</b> ${cliente["Municipio"] || ""}`;
+            // Filtra los clientes basándose en la ruta (obligatoria) y semana/día (opcionales)
+            const filtrados = clientes.filter(c =>
+                (c["Ruta"] === ruta) &&
+                (!semana || c["Semana"] === semana) &&
+                (!dia || c["Día de Visita"] === dia)
+            );
 
-        marcador.bindPopup(info);
-        marcadores.push(marcador);
-      });
+            if (filtrados.length === 0) {
+                mensaje.textContent = "No se encontraron clientes para los filtros seleccionados en esta ruta.";
+                mensaje.style.color = "orange";
+            } else {
+                mensaje.textContent = `Mostrando ${filtrados.length} cliente(s) en la ruta seleccionada.`;
+                mensaje.style.color = "green";
+            }
+            mostrarMarcadores(filtrados);
+        }
 
-      if (marcadores.length > 0) {
-        const grupo = L.featureGroup(marcadores);
-        mapa.fitBounds(grupo.getBounds());
-      }
-    }
+        function mostrarMarcadores(lista) {
+            // Elimina marcadores existentes
+            marcadores.forEach(m => mapa.removeLayer(m));
+            marcadores = [];
 
-    function buscarCliente() {
-      const texto = document.getElementById("busqueda").value.toLowerCase();
-      if (!texto) return;
+            if (lista.length === 0) {
+                // Si la lista está vacía, reinicia el mapa a la vista inicial si no hay marcadores
+                // y evita intentar ajustar límites de un grupo vacío.
+                if (mapa && mapa.getBounds().isValid()) { // Solo si el mapa ya tiene una vista válida
+                     mapa.setView([14.6349, -90.5069], 7); // Vuelve a la vista de Guatemala
+                }
+                return;
+            }
 
-      const coincidencias = clientes.filter(c =>
-        (c["Nombre"] && c["Nombre"].toLowerCase().includes(texto)) ||
-        (c["Código"] && c["Código"].toString().toLowerCase().includes(texto))
-      );
+            lista.forEach(cliente => {
+                const lat = parseFloat(cliente["Latitud"]);
+                const lon = parseFloat(cliente["Longitud"]);
 
-      mostrarMarcadores(coincidencias);
-    }
+                // Validar coordenadas: si no son números válidos, se ignora este cliente
+                if (isNaN(lat) || isNaN(lon)) {
+                    console.warn(`Cliente "${cliente["Nombre"] || cliente["Código"]}" tiene coordenadas inválidas: Lat ${cliente["Latitud"]}, Lon ${cliente["Longitud"]}. Ignorando.`);
+                    return;
+                }
 
-    window.onload = cargarDatos;
-  </script>
+                const marcador = L.marker([lat, lon]).addTo(mapa);
+                const info = `
+                    <b>Código:</b> ${cliente["Código"] || "N/A"}<br>
+                    <b>Nombre:</b> ${cliente["Nombre"] || "N/A"}<br>
+                    <b>Ruta:</b> ${cliente["Ruta"] || "N/A"}<br>
+                    <b>Semana:</b> ${cliente["Semana"] || "N/A"}<br>
+                    <b>Día:</b> ${cliente["Día de Visita"] || "N/A"}<br>
+                    <b>Dirección:</b> ${cliente["Dirección"] || "N/A"}<br>
+                    <b>Teléfono:</b> ${cliente["Teléfono"] || "N/A"}<br>
+                    <b>ID:</b> ${cliente["ID"] || "N/A"}<br>
+                    <b>RTN:</b> ${cliente["RTN"] || "N/A"}<br>
+                    <b>Canal:</b> ${cliente["Canal"] || "N/A"}<br>
+                    <b>Supervisor:</b> ${cliente["Supervisor"] || "N/A"}<br>
+                    <b>Región:</b> ${cliente["Región"] || "N/A"}<br>
+                    <b>Sucursal:</b> ${cliente["Sucursal"] || "N/A"}<br>
+                    <b>Departamento:</b> ${cliente["Departamento"] || "N/A"}<br>
+                    <b>Municipio:</b> ${cliente["Municipio"] || "N/A"}`;
+                marcador.bindPopup(info);
+                marcadores.push(marcador);
+            });
+
+            // Ajusta la vista del mapa para que todos los marcadores sean visibles
+            if (marcadores.length > 0) {
+                const grupo = L.featureGroup(marcadores);
+                mapa.fitBounds(grupo.getBounds());
+            }
+        }
+
+        function buscarCliente() {
+            const texto = document.getElementById("busqueda").value.toLowerCase().trim();
+            const mensaje = document.getElementById("mensaje");
+
+            // Limpiar y resetear los filtros de select al realizar una búsqueda
+            document.getElementById("ruta").value = "";
+            document.getElementById("semana").value = "";
+            document.getElementById("dia").value = "";
+            // Recargar las opciones de semana y día al limpiar la ruta
+            actualizarFiltroSemana();
+
+            if (!texto) {
+                // Si la búsqueda se borra, volver al estado inicial de "seleccione ruta"
+                cargarFiltroRutaInicial();
+                return;
+            }
+
+            const coincidencias = clientes.filter(c =>
+                (c["Nombre"] && c["Nombre"].toLowerCase().includes(texto)) ||
+                (c["Código"] && c["Código"].toString().toLowerCase().includes(texto))
+            );
+
+            if (coincidencias.length === 0) {
+                mensaje.textContent = "No se encontraron clientes con ese nombre o código.";
+                mensaje.style.color = "orange";
+            } else {
+                mensaje.textContent = `Mostrando ${coincidencias.length} cliente(s) por búsqueda.`;
+                mensaje.style.color = "green";
+            }
+            mostrarMarcadores(coincidencias);
+        }
+
+        window.onload = cargarDatos;
+    </script>
 </body>
 </html>
